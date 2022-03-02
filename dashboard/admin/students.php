@@ -25,24 +25,10 @@ $current_librarian = $_SESSION['admin_login'];
         <div class="overall-body">
             <?php include('includes/nav.php') ?>
             <div class="output-panel">
-                <?php include('includes/welcome_card.php') ?>
-                <div class="nav-card">
-                    <a class="each-card btn btn-primary text-start" href="#">
-                        <i class="bi bi-list-task"></i>&emsp;
-                        Find Book
-                    </a>
-                    <a class="each-card btn btn-primary text-start" href="#">
-                        <i class="bi bi-clipboard-check-fill"></i>&emsp;
-                        Find Book Issue
-                    </a>
-                    <a class="each-card btn btn-primary text-start" href="#">
-                        <i class="bi bi-person-fill"></i>&emsp;
-                        Find Student
-                    </a>
-                </div>
-                <div class="">
-
-                </div>
+                <h3>Manage Students</h3>
+                <p>
+                    This is the manage students section.
+                </p>
             </div>
         </div>
         <?php include('includes/footer.php') ?>
@@ -50,19 +36,6 @@ $current_librarian = $_SESSION['admin_login'];
     <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="../../assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script>
-    var timeDisplay = document.getElementById("time");
-
-    function refreshTime() {
-        var dateString = new Date().toLocaleString("en-US", {
-            timeZone: "Asia/Manila"
-        });
-        var formattedString = dateString.replace(", ", " - ");
-        timeDisplay.innerHTML = formattedString;
-    }
-
-    setInterval(refreshTime, 1000);
-    </script>
 </body>
 
 </html>

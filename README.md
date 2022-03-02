@@ -22,6 +22,9 @@ ___
   * `functions` - contains php functions or codes to be referenced in the main PHP files.
   *  `includes` - contains some redudant HTML code referenced over the login section such as the Header and Footer.
 * The files outside these folders are the main files and `index.php` is the first page that is rendered.
+###### v0.2.0
+* Version v0.2.0 creates a set of new files for the `admin` section of the Dashboard. This includes five different navigations: Issuing Books, Archive, Books, Students, and Settings.
+* Can be able to login and logout on the Administrator part.
 ___
 ### Installation and Setup
 All guides for setting up and installing the LibraryMS (PHP Edition) on your local device will be posted once the project reaches v1.0.0 or to the point that it is almost complete.

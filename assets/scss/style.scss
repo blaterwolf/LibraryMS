@@ -1,41 +1,6 @@
-@import "../node_modules/bootstrap/scss/bootstrap.scss";
-@import "../scss/variables";
+@import "_variables";
 
 // OVERRIDE BOOTSTRAP STYLES
-
-// sort out call colors for primary
-
-.btn-primary,
-.btn-primary:visited {
-  padding: 0.75rem;
-  background-color: $primary-color-main;
-  border-color: $primary-color-main;
-}
-
-.btn-primary:hover,
-.btn-primary:focus {
-  background-color: $primary-color-dark;
-  border-color: $primary-color-dark;
-}
-
-.btn-primary:disabled {
-  background-color: $primary-color-light;
-  border-color: $primary-color-light;
-}
-
-.btn-outline-primary,
-.btn-outline-primary:visited {
-  padding: 0.75rem;
-  color: $primary-color-main;
-  border-color: $primary-color-main;
-}
-
-.btn-outline-primary:hover,
-.btn-outline-primary:focus {
-  background-color: $primary-color-main;
-  border-color: $primary-color-main;
-  color: $white;
-}
 
 .fs-4 {
   font-weight: 700;
@@ -52,11 +17,19 @@ body {
   padding: 20px;
 }
 
-// Custom Styles
+// LOGIN RELATED STYLES
 
 .overall {
   display: flex;
   flex-direction: row;
+  align-items: stretch;
+  width: 100%;
+  height: 100vh;
+}
+
+.overall-dashboard {
+  display: flex;
+  flex-direction: column;
   align-items: stretch;
   width: 100%;
   height: 100vh;
@@ -140,3 +113,79 @@ body {
     height: auto;
   }
 }
+
+// DASHBOARD RELATED STYLES
+
+.overall-body {
+  display: flex;
+  flex-direction: row;
+  align-items: stretch;
+  height: 100vh;
+}
+
+.nav-panel {
+  flex: 0.5;
+  .btn {
+    display: flex;
+    align-items: center;
+    padding: 10px;
+    font-size: 20px;
+    font-weight: 500;
+    border-radius: 0;
+  }
+}
+
+.output-panel {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: stretch;
+  background-color: $white;
+  padding: 50px;
+  flex: 3;
+}
+
+.welcome-card {
+  display: flex;
+  flex-direction: column;
+  align-items: start;
+  align-content: center;
+  justify-content: flex-start;
+  padding: 20px;
+  background: linear-gradient(
+    155deg,
+    rgba(239, 135, 122, 1) 25%,
+    rgba(60, 98, 171, 1) 75%
+  );
+  border-radius: 10px;
+  box-shadow: 5px 5px 5px $shadow-color;
+
+  p {
+    margin: 0;
+  }
+
+  #time {
+    font-size: 20px;
+    font-weight: 700;
+  }
+}
+
+.nav-card {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  align-items: stretch;
+  padding: 10px;
+
+  .each-card {
+    display: flex;
+    flex-direction: row;
+    flex-grow: 1;
+    padding: 10px;
+    margin: 10px;
+    border-radius: 10px;
+    box-shadow: 5px 5px 5px $shadow-color;
+  }
+}
+
+@import "../node_modules/bootstrap/scss/bootstrap";
