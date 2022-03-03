@@ -1,96 +1,237 @@
+CREATE DATABASE LibraryMS;
+GO
+
+-- ! I recommend creating the database first then running the scripts below on a new query.
+
+USE LibraryMS;
+GO
+
 CREATE TABLE Admin
 (
-    AdminID VARCHAR(11) NOT NULL PRIMARY KEY,
+    AdminID VARCHAR(36) NOT NULL PRIMARY KEY,
     AdminName VARCHAR (100) NOT NULL,
     AdminUsername VARCHAR(20) NOT NULL,
-    AdminPassword VARCHAR(16) NOT NULL,
+    AdminPassword VARCHAR(255) NOT NULL,
 )
+GO
+
+CREATE TRIGGER trg_Admin_UpdateModifiedDate
+ON Admin
+AFTER UPDATE
+AS
+UPDATE Admin
+SET ModifiedDate = CURRENT_TIMESTAMP
+WHERE AdminID IN (SELECT DISTINCT AdminID
+FROM inserted);
+GO
 
 INSERT INTO Admin
 VALUES
-    ('ADMIN-00001', 'Administrator', 'admin', 'admin');
+    ('yDwn4mgJi7KMQukbjLqAFlhUxHo1PXNvcRBG', 'Administrator', 'admin', '$2y$10$ErNqtNt5rsk1CQZ6Ms2VmueaMSqKmymIzobraMZJ/EADLGOVZ3ZjS');
 
 CREATE TABLE Book_Category
 (
     Category_ID INT NOT NULL IDENTITY(1,1) PRIMARY KEY,
     Category_Name VARCHAR(100) NOT NULL,
-    Category_Status INT DEFAULT NULL,
 )
 
 INSERT INTO Book_Category
-    (Category_Name, Category_Status)
+    (Category_Name)
 VALUES
-    ('Fiction', 1);
+    ('Fiction');
 INSERT INTO Book_Category
-    (Category_Name, Category_Status)
+    (Category_Name)
 VALUES
-    ('Romance', 1);
+    ('Romance');
 INSERT INTO Book_Category
-    (Category_Name, Category_Status)
+    (Category_Name)
 VALUES
-    ('Technology', 1);
+    ('Technology');
 INSERT INTO Book_Category
-    (Category_Name, Category_Status)
+    (Category_Name)
 VALUES
-    ('Management', 0);
+    ('Management');
 
 CREATE TABLE Book
 (
-    Book_ID VARCHAR(11) NOT NULL PRIMARY KEY,
+    Book_ID VARCHAR(36) NOT NULL PRIMARY KEY,
     BOOK_ISBN VARCHAR(13) NOT NULL,
     Book_Name VARCHAR(100) NOT NULL,
     Book_Author VARCHAR(100) NOT NULL,
     Book_Description VARCHAR(500) DEFAULT NULL,
     Book_Category_ID INT NOT NULL,
-    Book_Status INT DEFAULT NULL,
+    Book_Status INT DEFAULT 0,
     Book_Copies_Actual INT DEFAULT NULL,
     Book_Copies_Current INT DEFAULT NULL,
+    CreateDate datetime DEFAULT CURRENT_TIMESTAMP,
+    ModifiedDate datetime DEFAULT CURRENT_TIMESTAMP,
     FOREIGN KEY (Book_Category_ID) REFERENCES Book_Category(Category_ID)
 )
+GO
+
+CREATE TRIGGER trg_Book_UpdateModifiedDate
+ON Book
+AFTER UPDATE
+AS
+UPDATE Book
+SET ModifiedDate = CURRENT_TIMESTAMP
+WHERE Book_ID IN (SELECT DISTINCT Book_ID
+FROM inserted);
+GO
 
 INSERT INTO Book
     (Book_ID, BOOK_ISBN, Book_Name, Book_Author, Book_Description, Book_Category_ID, Book_Status, Book_Copies_Actual, Book_Copies_Current)
 VALUES
-    ('BOOKS-XAS13', '9783161484100', 'The Alchemist', 'Paulo Coelho', 'The Alchemist is a novel by Brazilian writer Paulo Coelho. Published in 1988, the book is the first of five planned books by the author.', 1, 1, 10, 10);
+    ('xzt4gb65KrYkSGXiTvMpPZJqmEd0fQeUChF8', '9783161484100', 'The Alchemist', 'Paulo Coelho', 'The Alchemist is a novel by Brazilian writer Paulo Coelho. Published in 1988, the book is the first of five planned books by the author.', 1, 1, 10, 10);
+GO
 INSERT INTO Book
     (Book_ID, BOOK_ISBN, Book_Name, Book_Author, Book_Description, Book_Category_ID, Book_Status, Book_Copies_Actual, Book_Copies_Current)
 VALUES
-    ('BOOKS-BYI56', '9781524763282', 'Ready Player One', 'Ernest Cline', 'Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator''s fortune.', 1, 1, 5, 5);
+    ('1vnsz2IgHuXPdVWoymUNMxhfJbD4iG8YLROw', '9781524763282', 'Ready Player One', 'Ernest Cline', 'Ready Player One is a 2011 science fiction novel, and the debut novel of American author Ernest Cline. The story, set in a dystopia in 2045, follows protagonist Wade Watts on his search for an Easter egg in a worldwide virtual reality game, the discovery of which would lead him to inherit the game creator''s fortune.', 1, 1, 5, 5);
+GO
 
 CREATE TABLE Student
 (
-    Student_ID VARCHAR(12) NOT NULL PRIMARY KEY,
+    Student_ID VARCHAR(36) NOT NULL PRIMARY KEY,
+    Student_Number VARCHAR(12) NOT NULL,
     Student_Name VARCHAR(100) NOT NULL,
-    Student_Email VARCHAR(100) NOT NULL,
-    Student_Password VARCHAR(16) NOT NULL,
-    Student_Status INT DEFAULT NULL
+    Student_Email VARCHAR(255) NOT NULL,
+    Student_Password VARCHAR(255) NOT NULL,
+    Student_Status INT DEFAULT 1,
+    CreateDate datetime DEFAULT CURRENT_TIMESTAMP,
+    ModifiedDate datetime DEFAULT CURRENT_TIMESTAMP
 )
+GO
+
+CREATE TRIGGER trg_Student_UpdateModifiedDate
+ON Student
+AFTER UPDATE
+AS
+UPDATE Student
+SET ModifiedDate = CURRENT_TIMESTAMP
+WHERE Student_ID IN (SELECT DISTINCT Student_ID
+FROM inserted);
+GO
 
 INSERT INTO Student
-    (Student_ID, Student_Name, Student_Email, Student_Password, Student_Status)
+    (Student_ID, Student_Number, Student_Name, Student_Email, Student_Password)
 VALUES
-    ('109461010624', 'Wilbur Soot', 'wilbursoot@gmail.com', 'wilburrocks13', 1);
+    ('0ZmwdgsSrczBkel4FIvXtfb6WQaC5TA31nOV', '109461010624', 'Wilbur Soot', 'wilbursoot@gmail.com', '$2y$10$Ocg76T8eyH/NeU8feCWI/.5BuSdd2mkh..iwRAbHSp.NTdSbNT.aK');
+GO
 INSERT INTO Student
-    (Student_ID, Student_Name, Student_Email, Student_Password, Student_Status)
+    (Student_ID, Student_Number, Student_Name, Student_Email, Student_Password)
 VALUES
-    ('109461010625', 'George Davidson', 'georgenotfound@gmail.com', 'gogy_hw_11', 1);
+    ('z1nduyQHXYO8BrSpwfeNM6qI3WEs57TJmUR2', '109461010625', 'George Davidson', 'georgenotfound@gmail.com', '$2y$10$.0FXI6kFWa7AHXSRMf2RCukdq4nQbK1aZP/FlcsnFP2guJLgJNpDC');
+GO
 
-
-CREATE TABLE Book_Issue
+CREATE TABLE Borrow
 (
-    Issue_UQID VARCHAR(13) PRIMARY KEY,
-    Issue_Book_ID VARCHAR(11) NOT NULL,
-    Issue_Student_ID VARCHAR(12) NOT NULL,
-    Issue_Date DATE NOT NULL,
-    Issue_Due_Date DATE NOT NULL,
-    Issue_Status INT DEFAULT NULL,
-    FOREIGN KEY (Issue_Book_ID) REFERENCES Book(Book_ID),
-    FOREIGN KEY (Issue_Student_ID) REFERENCES Student(Student_ID)
+    Borrow_ID VARCHAR(36) PRIMARY KEY,
+    Borrow_Book_ID VARCHAR(36) NOT NULL,
+    Borrow_Student_ID VARCHAR(36) NOT NULL,
+    Borrow_Status INT DEFAULT 0,
+    Borrow_Date datetime DEFAULT CURRENT_TIMESTAMP,
+    Borrow_Return_Date datetime DEFAULT NULL,
+    FOREIGN KEY (Borrow_Book_ID) REFERENCES Book(Book_ID),
+    FOREIGN KEY (Borrow_Student_ID) REFERENCES Student(Student_ID)
 )
+GO
+
+CREATE TRIGGER trg_Borrow_UpdateBorrowReturnDate
+ON Borrow
+AFTER UPDATE
+AS
+UPDATE Borrow
+SET Borrow_Return_Date = CURRENT_TIMESTAMP
+WHERE Borrow_ID IN (SELECT DISTINCT Borrow_ID
+FROM inserted);
+GO
+
+INSERT INTO Borrow
+    (Borrow_ID, Borrow_Book_ID, Borrow_Student_ID)
+VALUES
+    ('E4imJHqlvZVwgURhPfaX1pLsktTFcNO0C8xu', '1vnsz2IgHuXPdVWoymUNMxhfJbD4iG8YLROw', 'z1nduyQHXYO8BrSpwfeNM6qI3WEs57TJmUR2');
+GO
+
+UPDATE Book
+SET Book_Copies_Current -= 1
+WHERE Book_ID = '1vnsz2IgHuXPdVWoymUNMxhfJbD4iG8YLROw' AND Book_Status = 1;
+GO
+
+-- * UPDATE TO UNAVAILABLE (Book_Status) KAPAG BOOK_COPIES_CURRENT = 0
+UPDATE Book
+SET Book_Status = 0
+WHERE Book_ID = '1vnsz2IgHuXPdVWoymUNMxhfJbD4iG8YLROw' AND Book_Copies_Current = 0;
+GO
 
 SELECT *
 FROM Student;
+GO
+
 SELECT *
-FROM Book_Issue;
+FROM Book;
+GO
+
+SELECT *
+FROM Borrow;
+GO
+
+CREATE PROCEDURE R_Get_Find_Book
+AS
+BEGIN
+    SELECT
+        Book_ISBN as ISBN,
+        Book_Name as Name,
+        Book_Author as Author,
+        Book_Description as Description,
+        Category_Name as Category,
+        Book_Status as Status
+    FROM Book
+        LEFT JOIN Book_Category
+        ON Book.Book_Category_ID = Book_Category.Category_ID
+END
+GO
+
+EXEC R_Get_Find_Book;
+GO
+
+CREATE Procedure R_Get_Find_Student
+AS
+BEGIN
+    SELECT
+        Student_Number as 'LRN Number',
+        Student_Name as 'Name',
+        Student_Email as 'Email',
+        Student_Status as 'Status'
+    FROM Student
+END
+GO
+
+EXEC R_Get_Find_Student;
+GO
+
+CREATE PROCEDURE R_Get_Find_Borrow
+AS
+BEGIN
+    SELECT
+        Book_Name,
+        Student_Name,
+        Borrow_Status,
+        Borrow_Date
+    FROM Borrow
+        LEFT JOIN Book
+        ON Borrow.Borrow_Book_ID = Book.Book_ID
+        LEFT JOIN Student
+        ON Borrow.Borrow_Student_ID = Student.Student_ID;
+END
+GO
+
+EXEC R_Get_Find_Borrow;
+GO
+
+
 
 -- ! On PHP: Use uniqid() to generate unique ID to Issue_UQID
+-- * Update: Note above is not useful, using this instead to generate 36 string IDs:
+-- ?    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+-- ?    echo substr(str_shuffle($permitted_chars), 0, 36);

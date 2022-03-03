@@ -36,9 +36,6 @@ if ($_SESSION['admin_login'] != '') {
     <link href="assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
-    <script>
-
-    </script>
 </head>
 
 <body>
@@ -99,12 +96,12 @@ if ($_SESSION['admin_login'] != '') {
                                         Oh well, at least nakukuha naman niya yung values sa input ng username and password di kagaya kahapon.
                                         */
                                         $username = $_REQUEST['username'];
-                                        $password = ($_REQUEST['password']);
+                                        $password = $_REQUEST['password'];
                                         try {
                                             $params = array(&$username, &$password);
                                             $connection = sqlsrv_connect($server, $connectionInfo);
-                                            $query = "SELECT AdminUsername, AdminPassword FROM Admin WHERE AdminUsername = ? AND AdminPassword = ?;";
-                                            $statement = sqlsrv_prepare($connection, $query, $params);
+                                            $query = "SELECT AdminUsername, AdminPassword FROM Admin;";
+                                            $statement = sqlsrv_prepare($connection, $query);
                                             $result = sqlsrv_execute($statement);
                                             /*
                                             Stack Overflow: (https://stackoverflow.com/questions/19227419/why-is-sqlsrv-fetch-array-returning-null)
@@ -118,7 +115,7 @@ if ($_SESSION['admin_login'] != '') {
                                             // dapat may else statement.
                                             if ($result === TRUE) {
                                                 // salamat Github Copilot :D
-                                                if ($row['AdminUsername'] == $username and $row['AdminPassword'] == $password) {
+                                                if ($row['AdminUsername'] == $username and password_verify($password, $row['AdminPassword'])) {
                                                     $_SESSION['admin_login'] = $username;
                                                     /*
                                                         From the original source code, ang gamit na code is:
@@ -126,12 +123,14 @@ if ($_SESSION['admin_login'] != '') {
                                                         Stack Overflow: https://stackoverflow.com/questions/15655017/window-location-js-vs-header-php-for-redirection
                                                         Sabi naman dyan sa article na walang pinagkaiba kung gagamitin ko JS or PHP header function so...
                                                     */
-                                                    header("Location: dashboard/admin/dashboard.php");
+                                                    // Somewhere here, dapat may javascript na magrurun ng notifications.
+
+                                                    header("Location: dashboard/admin/dashboard-home.php");
                                                 } else {
                                                     echo "<label class='text-danger'>Invalid username or password.</label>";
                                                 }
                                             } else {
-                                                echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
+                                                echo "<label class='text-danger'>Database returns false or null. Call DB Admin.</label>";
                                             }
                                         } catch (PDOException $e) {
                                             exit("Error: " . $e->getMessage());
@@ -152,9 +151,10 @@ if ($_SESSION['admin_login'] != '') {
         </div>
         <?php include('includes/right_panel.php') ?>
     </div>
-    <script src="assets/node_modules/jquery/dist/jquery.js"></script>
+
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+
 </body>
 
 </html>

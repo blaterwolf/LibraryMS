@@ -120,7 +120,7 @@ body {
   display: flex;
   flex-direction: row;
   align-items: stretch;
-  height: 100vh;
+  height: 100%;
 }
 
 .nav-panel {
@@ -141,8 +141,27 @@ body {
   flex-direction: column;
   align-items: stretch;
   background-color: $white;
-  padding: 50px;
+  padding: 30px;
   flex: 3;
+
+  .form {
+    display: flex;
+    justify-content: center;
+  }
+}
+
+.outside-card {
+  padding: 10px;
+  display: flex;
+  justify-content: center;
+
+  .output-overflow {
+    position: fixed;
+    overflow: scroll;
+    padding: 10px;
+    width: 75%;
+    height: 375px;
+  }
 }
 
 .welcome-card {

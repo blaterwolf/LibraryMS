@@ -1,12 +1,12 @@
 <?php
-if (basename($_SERVER['PHP_SELF']) == 'dashboard.php') :
+if (basename($_SERVER['PHP_SELF']) == 'dashboard-home.php' or basename($_SERVER['PHP_SELF']) == 'dashboard-borrow.php' or basename($_SERVER['PHP_SELF']) == 'dashboard-stud.php') :
 ?>
 <div class="nav-panel btn-group-vertical">
-    <a id="home" type="button" class="btn btn-primary active text-center" href="dashboard.php">
+    <a id="home" type="button" class="btn btn-primary active text-center" href="dashboard-home.php">
         <i class="bi bi-house-fill"></i>&emsp;
         HOME
     </a>
-    <a id="books" type="button" class="btn btn-primary text-start" href="books.php">
+    <a id="books" type="button" class="btn btn-primary text-start" href="books-add.php">
         <i class="bi bi-book-fill"></i>&emsp;
         BOOKS
     </a>
@@ -24,14 +24,14 @@ if (basename($_SERVER['PHP_SELF']) == 'dashboard.php') :
     </a>
 </div>
 <?php
-elseif (basename($_SERVER['PHP_SELF']) == 'books.php') :
+elseif (basename($_SERVER['PHP_SELF']) == 'books-add.php' or basename($_SERVER['PHP_SELF']) == 'books-edit.php') :
 ?>
 <div class="nav-panel btn-group-vertical">
-    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard.php">
+    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard-home.php">
         <i class="bi bi-house-fill"></i>&emsp;
         HOME
     </a>
-    <a id="books" type="button" class="btn btn-primary active text-start" href="books.php">
+    <a id="books" type="button" class="btn btn-primary active text-start" href="books-add.php">
         <i class="bi bi-book-fill"></i>&emsp;
         BOOKS
     </a>
@@ -52,11 +52,11 @@ elseif (basename($_SERVER['PHP_SELF']) == 'books.php') :
 elseif (basename($_SERVER['PHP_SELF']) == 'students.php') :
 ?>
 <div class="nav-panel btn-group-vertical">
-    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard.php">
+    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard-home.php">
         <i class="bi bi-house-fill"></i>&emsp;
         HOME
     </a>
-    <a id="books" type="button" class="btn btn-primary text-start" href="books.php">
+    <a id="books" type="button" class="btn btn-primary text-start" href="books-add.php">
         <i class="bi bi-book-fill"></i>&emsp;
         BOOKS
     </a>
@@ -77,11 +77,11 @@ elseif (basename($_SERVER['PHP_SELF']) == 'students.php') :
 elseif (basename($_SERVER['PHP_SELF']) == 'issue_books.php') :
 ?>
 <div class="nav-panel btn-group-vertical">
-    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard.php">
+    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard-home.php">
         <i class="bi bi-house-fill"></i>&emsp;
         HOME
     </a>
-    <a id="books" type="button" class="btn btn-primary text-start" href="books.php">
+    <a id="books" type="button" class="btn btn-primary text-start" href="books-add.php">
         <i class="bi bi-book-fill"></i>&emsp;
         BOOKS
     </a>
@@ -102,11 +102,11 @@ elseif (basename($_SERVER['PHP_SELF']) == 'issue_books.php') :
 elseif (basename($_SERVER['PHP_SELF']) == 'archive.php') :
 ?>
 <div class="nav-panel btn-group-vertical">
-    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard.php">
+    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard-home.php">
         <i class="bi bi-house-fill"></i>&emsp;
         HOME
     </a>
-    <a id="books" type="button" class="btn btn-primary text-start" href="books.php">
+    <a id="books" type="button" class="btn btn-primary text-start" href="books-add.php">
         <i class="bi bi-book-fill"></i>&emsp;
         BOOKS
     </a>
@@ -125,11 +125,11 @@ elseif (basename($_SERVER['PHP_SELF']) == 'archive.php') :
 </div>
 <?php else : ?>
 <div class="nav-panel btn-group-vertical">
-    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard.php">
+    <a id="home" type="button" class="btn btn-primary text-center" href="dashboard-home.php">
         <i class="bi bi-house-fill"></i>&emsp;
         HOME
     </a>
-    <a id="books" type="button" class="btn btn-primary text-start" href="books.php">
+    <a id="books" type="button" class="btn btn-primary text-start" href="books-add.php">
         <i class="bi bi-book-fill"></i>&emsp;
         BOOKS
     </a>

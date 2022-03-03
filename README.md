@@ -25,6 +25,9 @@ ___
 ###### v0.2.0
 * Version v0.2.0 creates a set of new files for the `admin` section of the Dashboard. This includes five different navigations: Issuing Books, Archive, Books, Students, and Settings.
 * Can be able to login and logout on the Administrator part.
+###### v0.3.0
+* Version v0.3.0 consists of the update for the database queries including some of the Stored Procedures.
+* Updates with the Home Dashboard and Books Section are on the way.
 ___
 ### Installation and Setup
 All guides for setting up and installing the LibraryMS (PHP Edition) on your local device will be posted once the project reaches v1.0.0 or to the point that it is almost complete.
