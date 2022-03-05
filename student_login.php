@@ -21,11 +21,24 @@ if ($_SESSION['login'] != '') {
     <link href="assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
-    <script>
-    </script>
+    <!-- JQUERY -->
+    <script src="assets/node_modules/jquery/dist/jquery.js"></script>
+    <!-- SWEETALERT, SANA GUMANA KA NA. -->
+    <link rel="stylesheet" href="assets/node_modules/sweetalert2/dist/sweetalert2.css" />
+    <link rel="stylesheet" href="assets/node_modules/sweetalert2/dist/sweetalert2.min.css" />
+    <script src="assets/node_modules/sweetalert2/dist/sweetalert2.all.js"></script>
 </head>
 
 <body>
+    <?php
+    if (isset($_SESSION['sign_up_message'])) {
+        echo $_SESSION['sign_up_message'];
+        unset($_SESSION['sign_up_message']);
+    } else if (isset($_SESSION['FPW_message'])) {
+        echo $_SESSION['FPW_message'];
+        unset($_SESSION['FPW_message']);
+    }
+    ?>
     <!-- MAIN -->
     <div class="overall">
         <div class="left-panel">
@@ -35,13 +48,13 @@ if ($_SESSION['login'] != '') {
                 <div class="form">
                     <form role="form" method="post" action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                         <div class="form-floating mb-3">
-                            <input name="email" type="email" required maxlength="100" class="form-control"
-                                id="floatingInput" placeholder="name@example.com">
-                            <label for="floatingInput">Email address</label>
+                            <input name="student_number" type="number" required minlength="12" maxlength="12"
+                                class="form-control" id="floatingInput" placeholder="123456789012">
+                            <label for="floatingInput">Student Number</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="password" type="password" required maxlength="16" class="form-control"
-                                id="floatingPassword" placeholder="Password">
+                            <input name="password" type="password" required minlength="6" maxlength="16"
+                                class="form-control" id="floatingPassword" placeholder="Password">
                             <label for="floatingPassword">Password</label>
                         </div>
                         <div class="captcha-container">
@@ -60,20 +73,22 @@ if ($_SESSION['login'] != '') {
                                     if (!($_SESSION['captcha'] == $_POST['captcha'])) {
                                         echo "<label class='text-danger'>Invalid captcha.</label>";
                                     } else {
-                                        $email = $_REQUEST['email'];
+                                        $student_number = $_REQUEST['student_number'];
                                         $password = ($_REQUEST['password']);
                                         try {
-                                            $params = array(&$email, &$password);
+                                            $params = array(&$student_number);
                                             $connection = sqlsrv_connect($server, $connectionInfo);
-                                            $query = "SELECT Student_ID, Student_Email, Student_Password FROM Student WHERE Student_Email = ? AND Student_Password = ?;";
+                                            $query = "EXEC R_Get_Stud_Login_Info @StudNum = ?;";
                                             $statement = sqlsrv_prepare($connection, $query, $params);
                                             $result = sqlsrv_execute($statement);
                                             $row = sqlsrv_fetch_array($statement);
                                             if ($result === TRUE) {
-                                                if ($row['Student_Email'] == $email and $row['Student_Password'] == $password) {
-                                                    $_SESSION['student_login'] = $row['Student_ID'];
+                                                if ($row['Student_Number'] == $student_number and password_verify($password, $row['Student_Password'])) {
+                                                    $_SESSION['student_login'] = $row['Student_Number'];
+                                                    $_SESSION['login_stud_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 2000});</script>";;
                                                     header("Location: dashboard/student/dashboard.php");
                                                 } else {
+                                                    var_dump($student_number, $password);
                                                     echo "<label class='text-danger'>Invalid username or password.</label>";
                                                 }
                                             } else {
@@ -99,7 +114,6 @@ if ($_SESSION['login'] != '') {
         </div>
         <?php include('includes/right_panel.php') ?>
     </div>
-    <script src="assets/node_modules/jquery/dist/jquery.js"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
 </body>

@@ -7,6 +7,12 @@ $database = 'LibraryMS';
 
 $connectionInfo = array("Database" => $database);
 
+function generateID()
+{
+    $permitted_chars = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+    return substr(str_shuffle($permitted_chars), 0, 36);
+}
+
 // Establish database connection.
 
 

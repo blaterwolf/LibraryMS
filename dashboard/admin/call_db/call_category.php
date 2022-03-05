@@ -1,6 +1,6 @@
-<div class="mb-3">
-    <label for="category-list" class="form-label">Category</label>
-    <input name="Category" class="form-control" list="category-options" id="category-list"
+<div class="mb-3 col-sm">
+    <label for="book_category" class="form-label">Category</label>
+    <input name="category" class="form-control" list="category-options" id="book_category"
         placeholder="Search Category...">
     <datalist id="category-options">
         <?php

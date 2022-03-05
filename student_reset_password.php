@@ -2,8 +2,8 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if ($_SESSION['login'] != '') {
-    $_SESSION['login'] = '';
+if ($_SESSION['student_login'] != '') {
+    $_SESSION['student_login'] = '';
 }
 ?>
 
@@ -31,9 +31,14 @@ if ($_SESSION['login'] != '') {
                 <div class="form">
                     <form role="form" method="post">
                         <div class="form-floating mb-3">
-                            <input name="student_id" required maxlength="12" type="student_id" class="form-control"
-                                id="floatingInput" placeholder="109461010203">
-                            <label for="floatingInput">Student ID</label>
+                            <input name="student_number" type="number" required minlength="12" maxlength="12"
+                                class="form-control" id="floatingInput" placeholder="123456789012">
+                            <label for="floatingInput">Student Number</label>
+                        </div>
+                        <div class="form-floating mb-3">
+                            <input name="email" required maxlength="100" type="email" class="form-control"
+                                id="floatingInput" placeholder="example@gmail.com">
+                            <label for="floatingInput">Email address</label>
                         </div>
                         <div class="form-floating mb-3">
                             <input name="password" required type="password" class="form-control" id="floatingPassword"
@@ -61,25 +66,42 @@ if ($_SESSION['login'] != '') {
                                     if (!($_SESSION['captcha'] == $_POST['captcha'])) {
                                         echo "<label class='text-danger'>Invalid captcha.</label>";
                                     } else {
-                                        $student_id = $_REQUEST['student_id'];
+                                        $student_number = $_REQUEST['student_number'];
+                                        $email = $_REQUEST['email'];
                                         $password = $_REQUEST['password'];
                                         $retype_password = $_REQUEST['retype_password'];
-                                        if ($password == $retype_password) {
-                                            $params = array(&$password, &$student_id);
-                                            $connection = sqlsrv_connect($server, $connectionInfo);
-                                            $query = "UPDATE Student SET Student_Password = ? WHERE Student_ID = ?";
-                                            $statement = sqlsrv_prepare($connection, $query, $params);
-                                            $result = sqlsrv_execute($statement);
-                                            if ($result === TRUE) {
-                                                // February 10, 2022 -> medyo gigil na ako di gumagana yung echo JS function na to...
-                                                // GUMAGANA NA TO PAKIGAWAN LANG NG PARAAN PAANO I-RUN YUNG JAVASCRIPT SA ALERT.
-                                                // include('functions/alert.php');
-                                                header('Location: student_login.php');
+                                        // * I check mo muna if yung email na yun ay match sa provided email ni user sa datbaase.
+                                        $params = array(&$student_number, &$email);
+                                        $connection = sqlsrv_connect($server, $connectionInfo);
+                                        $query = "EXEC R_Get_Stud_Email @StudNum = ?, @Email = ?";
+                                        $statement = sqlsrv_prepare($connection, $query, $params);
+                                        $result = sqlsrv_execute($statement);
+                                        $row = sqlsrv_fetch_array($statement);
+                                        if ($row['Student_Email'] == $email) {
+                                            // * Then check mo if equal password
+                                            if ($password == $retype_password) {
+                                                $password = password_hash($password, PASSWORD_DEFAULT);
+                                                $params = array(&$password, &$student_number);
+                                                $connection = sqlsrv_connect($server, $connectionInfo);
+                                                $query = "EXEC U_Update_Student_Password @Password = ?, @StudNum = ?;";
+                                                $statement = sqlsrv_prepare($connection, $query, $params);
+                                                $result = sqlsrv_execute($statement);
+                                                if ($result === TRUE) {
+                                                    // February 10, 2022 -> medyo gigil na ako di gumagana yung echo JS function na to...
+                                                    // GUMAGANA NA TO PAKIGAWAN LANG NG PARAAN PAANO I-RUN YUNG JAVASCRIPT SA ALERT.
+                                                    // include('functions/alert.php');
+                                                    // March 4, 2022 (17:45) -> reworking this since nabago nga database.
+                                                    // March 4, 2022 (~18:30) -> haha hello self gumagana na :D
+                                                    $_SESSION['FPW_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully updated your password!',text: 'Redirected you back to Login...',showConfirmButton: false,timer: 2000});</script>";
+                                                    header('Location: student_login.php');
+                                                } else {
+                                                    echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
+                                                }
                                             } else {
-                                                echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
+                                                echo "<label class='text-danger'>Password does not match.</label>";
                                             }
                                         } else {
-                                            echo "<label class='text-danger'>Password does not match.</label>";
+                                            echo "<label class='text-danger'>Invalid email address.</label>";
                                         }
                                     }
                                 }

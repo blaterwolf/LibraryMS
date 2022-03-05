@@ -36,6 +36,8 @@ if ($_SESSION['admin_login'] != '') {
     <link href="assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+    <!-- JQUERY -->
+    <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
 </head>
 
 <body>
@@ -92,13 +94,12 @@ if ($_SESSION['admin_login'] != '') {
                                         Ayun yung mali na naenounter ko dito since kahapon (February 9, 2022) kasi walang pumapasok na input
                                         from the variables. 
                                         Pero to make sure, ginamit ko na yung _REQUEST method instead of _POST since sabi naman dyan sa 
-                                        SO article na pwede naman gamitin yun. Though of course, di ko alam kung safe siya for security terms or something.
+                                        Stack Overflow article na pwede naman gamitin yun. Though of course, di ko alam kung safe siya for security terms or something.
                                         Oh well, at least nakukuha naman niya yung values sa input ng username and password di kagaya kahapon.
                                         */
                                         $username = $_REQUEST['username'];
                                         $password = $_REQUEST['password'];
                                         try {
-                                            $params = array(&$username, &$password);
                                             $connection = sqlsrv_connect($server, $connectionInfo);
                                             $query = "SELECT AdminUsername, AdminPassword FROM Admin;";
                                             $statement = sqlsrv_prepare($connection, $query);
@@ -123,8 +124,9 @@ if ($_SESSION['admin_login'] != '') {
                                                         Stack Overflow: https://stackoverflow.com/questions/15655017/window-location-js-vs-header-php-for-redirection
                                                         Sabi naman dyan sa article na walang pinagkaiba kung gagamitin ko JS or PHP header function so...
                                                     */
-                                                    // Somewhere here, dapat may javascript na magrurun ng notifications.
-
+                                                    // * Store javascript code in the session variable so that it can be used in the next page.
+                                                    // * Tagapagligtas: https://stackoverflow.com/a/4873865/14043411
+                                                    $_SESSION['message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 1500});</script>";
                                                     header("Location: dashboard/admin/dashboard-home.php");
                                                 } else {
                                                     echo "<label class='text-danger'>Invalid username or password.</label>";
@@ -133,6 +135,8 @@ if ($_SESSION['admin_login'] != '') {
                                                 echo "<label class='text-danger'>Database returns false or null. Call DB Admin.</label>";
                                             }
                                         } catch (PDOException $e) {
+                                            // di ko alam gagawin sa error message na to since kinopya ko nga lang to from the previous code
+                                            // but hindi naman umaabot sa point na to so I guess don't fix what's not broken
                                             exit("Error: " . $e->getMessage());
                                         }
                                     }
@@ -151,10 +155,8 @@ if ($_SESSION['admin_login'] != '') {
         </div>
         <?php include('includes/right_panel.php') ?>
     </div>
-
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
-
 </body>
 
 </html>

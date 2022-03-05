@@ -5,7 +5,6 @@ include('includes/config.php');
 if ($_SESSION['login'] != '') {
     $_SESSION['login'] = '';
 }
-include('includes/review_data_modal.php');
 ?>
 
 <!DOCTYPE html>
@@ -21,6 +20,7 @@ include('includes/review_data_modal.php');
     <link href="assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+
 </head>
 
 <body>
@@ -32,34 +32,34 @@ include('includes/review_data_modal.php');
                 <div class="form">
                     <form role="form" method="post">
                         <div class="form-floating mb-3">
-                            <input name="student_id" required maxlength="12" type="student_id" class="form-control"
-                                id="floatingInput" placeholder="109461010203">
-                            <label for="floatingInput">Student ID</label>
-                        </div>
-                        <div class="form-floating mb-3">
-                            <input name="email" required maxlength="100" type="email" class="form-control"
-                                id="floatingInput" placeholder="name@example.com">
-                            <label for="floatingInput">Email address</label>
+                            <input name="student_number" required maxlength="12" type="student_number"
+                                class="form-control" id="floatingInput">
+                            <label for="floatingInput">Student Number</label>
                         </div>
                         <div class="form-floating mb-3">
                             <input name="name" required maxlength="100" type="name" class="form-control"
-                                id="floatingInput" placeholder="Juan Dela Cruz">
+                                id="floatingInput">
                             <label for="floatingInput">Name</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="password" required maxlength="16" type="password" class="form-control"
-                                id="floatingPassword" placeholder="Password">
-                            <label for="floatingPassword">Password</label>
+                            <input name="email" required maxlength="100" type="email" class="form-control"
+                                id="floatingInput">
+                            <label for="floatingInput">Email address</label>
                         </div>
                         <div class="form-floating mb-3">
+                            <input name="password" required maxlength="16" type="password" class="form-control"
+                                id="floatingPassword">
+                            <label for="floatingPassword">Password</label>
+                        </div>
+                        <div class="form-floating mb-3 ">
                             <input name="retype-password" required maxlength="16" type="password" class="form-control"
-                                id="floatingPassword" placeholder="Password">
-                            <label for="floatingPassword">Retype Password</label>
+                                id="floatingRetypePassword">
+                            <label for="floatingRetypePassword">Retype Password</label>
                         </div>
                         <div class="captcha-container">
                             <div class="form-floating mb-3">
-                                <input type="text" class="form-control" id="floatingInput" placeholder="Juan Dela Cruz"
-                                    name="captcha" maxlength="5" autocomplete="off">
+                                <input type="text" class="form-control" id="floatingInput" name="captcha" maxlength="5"
+                                    autocomplete="off">
                                 <label for="floatingInput">Captcha</label>
                             </div>
                             <br />
@@ -72,25 +72,30 @@ include('includes/review_data_modal.php');
                                     if (!($_SESSION['captcha'] == $_POST['captcha'])) {
                                         echo "<label class='text-danger'>Invalid captcha.</label>";
                                     } else {
-                                        $student_id = $_REQUEST['student_id'];
+                                        $student_id = generateID();
+                                        $student_number = $_REQUEST['student_number'];
                                         $name = $_REQUEST['name'];
                                         $email = $_REQUEST['email'];
                                         $password = $_REQUEST['password'];
                                         $retype_password = $_REQUEST['retype-password'];
+                                        $status = 1;
                                         if ($password == $retype_password) {
-                                            $params = array(&$student_id, &$name, &$email, &$password);
+                                            $password = password_hash($_REQUEST['password'], PASSWORD_DEFAULT);
+                                            $params = array(&$student_id, &$student_number, &$name, &$email, &$password, &$status);
                                             $connection = sqlsrv_connect($server, $connectionInfo);
-                                            $query = "INSERT INTO Student (Student_ID, Student_Name, Student_Email, Student_Password, Student_Status) VALUES (?, ?, ?, ?, 1);";
+                                            $query = "EXEC C_Signup_Student @StudID = ?, @StudNum = ?, @Name = ?, @Email = ?, @Password = ?, @Status = ?;";
                                             $statement = sqlsrv_prepare($connection, $query, $params);
                                             $result = sqlsrv_execute($statement);
                                             if ($result === TRUE) {
                                                 // February 10, 2022 -> medyo gigil na ako di gumagana yung echo JS function na to...
                                                 // GUMAGANA NA TO PAKIGAWAN LANG NG PARAAN PAANO I-RUN YUNG JAVASCRIPT SA ALERT.
                                                 // include('functions/alert.php');
-                                                echo "<script>alert('You have inserted the data successfully. Redirecting back...');</script>";
+                                                // March 4, 2022 -> nirework ko yung database so nabago 'to, will check and add the notification function na.
+                                                // March 4, 2022 (17:44) -> gumagana na 'to haha hello self from the past :D
+                                                $_SESSION['sign_up_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully Signed In!',text: 'Redirected you back to Login...',showConfirmButton: false,timer: 2000});</script>";
                                                 header('Location: student_login.php');
                                             } else {
-                                                echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
+                                                echo "<label class='text-danger'>Something went wrong, try again later.</label>";
                                             }
                                         } else {
                                             echo "<label class='text-danger'>Password does not match.</label>";

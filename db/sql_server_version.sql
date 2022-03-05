@@ -15,6 +15,8 @@ CREATE TABLE Admin
 )
 GO
 
+-- * Thanks to this article, automatic na magegegenerate ng Modified Date itong mga tables:
+-- * https://database.guide/create-a-last-modified-column-in-sql-server/
 CREATE TRIGGER trg_Admin_UpdateModifiedDate
 ON Admin
 AFTER UPDATE
@@ -130,6 +132,7 @@ CREATE TABLE Borrow
     Borrow_Book_ID VARCHAR(36) NOT NULL,
     Borrow_Student_ID VARCHAR(36) NOT NULL,
     Borrow_Status INT DEFAULT 0,
+    Borrow_Copies_Got INT NOT NULL,
     Borrow_Date datetime DEFAULT CURRENT_TIMESTAMP,
     Borrow_Return_Date datetime DEFAULT NULL,
     FOREIGN KEY (Borrow_Book_ID) REFERENCES Book(Book_ID),
@@ -148,9 +151,9 @@ FROM inserted);
 GO
 
 INSERT INTO Borrow
-    (Borrow_ID, Borrow_Book_ID, Borrow_Student_ID)
+    (Borrow_ID, Borrow_Book_ID, Borrow_Student_ID, Borrow_Copies_Got)
 VALUES
-    ('E4imJHqlvZVwgURhPfaX1pLsktTFcNO0C8xu', '1vnsz2IgHuXPdVWoymUNMxhfJbD4iG8YLROw', 'z1nduyQHXYO8BrSpwfeNM6qI3WEs57TJmUR2');
+    ('E4imJHqlvZVwgURhPfaX1pLsktTFcNO0C8xu', '1vnsz2IgHuXPdVWoymUNMxhfJbD4iG8YLROw', 'z1nduyQHXYO8BrSpwfeNM6qI3WEs57TJmUR2', 1);
 GO
 
 UPDATE Book
@@ -175,61 +178,6 @@ GO
 SELECT *
 FROM Borrow;
 GO
-
-CREATE PROCEDURE R_Get_Find_Book
-AS
-BEGIN
-    SELECT
-        Book_ISBN as ISBN,
-        Book_Name as Name,
-        Book_Author as Author,
-        Book_Description as Description,
-        Category_Name as Category,
-        Book_Status as Status
-    FROM Book
-        LEFT JOIN Book_Category
-        ON Book.Book_Category_ID = Book_Category.Category_ID
-END
-GO
-
-EXEC R_Get_Find_Book;
-GO
-
-CREATE Procedure R_Get_Find_Student
-AS
-BEGIN
-    SELECT
-        Student_Number as 'LRN Number',
-        Student_Name as 'Name',
-        Student_Email as 'Email',
-        Student_Status as 'Status'
-    FROM Student
-END
-GO
-
-EXEC R_Get_Find_Student;
-GO
-
-CREATE PROCEDURE R_Get_Find_Borrow
-AS
-BEGIN
-    SELECT
-        Book_Name,
-        Student_Name,
-        Borrow_Status,
-        Borrow_Date
-    FROM Borrow
-        LEFT JOIN Book
-        ON Borrow.Borrow_Book_ID = Book.Book_ID
-        LEFT JOIN Student
-        ON Borrow.Borrow_Student_ID = Student.Student_ID;
-END
-GO
-
-EXEC R_Get_Find_Borrow;
-GO
-
-
 
 -- ! On PHP: Use uniqid() to generate unique ID to Issue_UQID
 -- * Update: Note above is not useful, using this instead to generate 36 string IDs:

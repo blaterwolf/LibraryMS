@@ -24,6 +24,12 @@ include('../../includes/config.php');
     <link rel="stylesheet" type="text/css"
         href="../../assets/node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
     <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
+    <!-- JQUERY -->
+    <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
+    <!-- SWEETALERT, SANA GUMANA KA NA. -->
+    <link rel="stylesheet" href="../../assets/node_modules/sweetalert2/dist/sweetalert2.css" />
+    <link rel="stylesheet" href="../../assets/node_modules/sweetalert2/dist/sweetalert2.min.css" />
+    <script src="../../assets/node_modules/sweetalert2/dist/sweetalert2.all.js"></script>
     <script>
     $(document).ready(function() {
         $('#book_table').DataTable({
@@ -34,6 +40,11 @@ include('../../includes/config.php');
 </head>
 
 <body>
+    <?php
+    if (isset($_SESSION['message'])) {
+        echo $_SESSION['message'];
+        unset($_SESSION['message']);
+    } ?>
     <div class="overall-dashboard">
         <?php include('includes/header.php') ?>
         <div class="overall-body">
@@ -84,7 +95,6 @@ include('../../includes/config.php');
         </div>
         <?php include('includes/footer.php') ?>
     </div>
-    <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="../../assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
     <script>
