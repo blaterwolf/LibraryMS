@@ -153,4 +153,149 @@ BEGIN
 END
 GO
 
--- ! Wala pa dito yung R_Get_Book_Categories (pang query ng names para sa choices) at R_Get_Category_Name (pang query ng id, mali name ko dito)
+-- ? Used in borrow_books.php
+-- ? Get all available book names.
+
+CREATE PROCEDURE R_Get_Available_Books
+AS
+BEGIN
+    SELECT Book_Name
+    FROM Book
+    WHERE Book_Status = 1;
+END
+GO
+
+EXEC R_Get_Available_Books;
+GO
+
+-- ? Used in borrow_books.php
+-- ? Get Student_ID based on _SESSION['Student_Number'].
+
+CREATE PROCEDURE R_Stud_Id_By_Stud_Num
+    @StudNum VARCHAR(12)
+AS
+BEGIN
+    SELECT Student_ID
+    FROM Student
+    WHERE Student_Number = @StudNum;
+END
+GO
+
+EXEC R_Stud_Id_By_Stud_Num @StudNum = '109461060131';
+GO
+
+-- ? Used in borrow_books.php
+-- ? The main function for creating a borrowed book transaction.
+
+CREATE PROCEDURE C_Add_Borrow_Book
+    @BorrowID VARCHAR(36),
+    @BookID VARCHAR(36),
+    @StudentID VARCHAR(36),
+    @NumCopies INT
+AS
+BEGIN
+    INSERT INTO Borrow
+        (Borrow_ID, Borrow_Book_ID, Borrow_Student_ID, Borrow_Copies_Got)
+    VALUES
+        (@BorrowID, @BookID, @StudentID, @NumCopies);
+
+    -- * UPDATE THE NUMBER OF COPIES OF BOOK
+    UPDATE Book
+	SET Book_Copies_Current -= @NumCopies
+	WHERE Book_ID = @BookID AND Book_Status = 1;
+
+
+    -- * UPDATE TO UNAVAILABLE (Book_Status) KAPAG BOOK_COPIES_CURRENT = 0
+    UPDATE Book
+	SET Book_Status = 0
+	WHERE Book_ID = @BookID AND Book_Copies_Current = 0;
+END
+GO
+
+-- ? Used in transactions.php
+-- ? The main function for retrieving the borrow history of the student.
+
+CREATE PROCEDURE R_Transaction_History
+    @StudNum VARCHAR(12)
+AS
+BEGIN
+    SELECT
+        Book_Name AS 'Book Borrowed',
+        Student_Name AS 'Student Name',
+        Borrow_Copies_Got AS 'Number of Copies',
+        Borrow_Status AS 'Status',
+        Borrow_Date AS 'Borrow Date',
+        Borrow_Return_Date AS 'Return Date'
+    FROM Borrow
+        LEFT JOIN Book
+        ON Borrow.Borrow_Book_ID = Book.Book_ID
+        LEFT JOIN Student
+        ON Borrow.Borrow_Student_ID = Student.Student_ID
+    WHERE Student_Number = @StudNum;
+END
+GO
+
+EXEC R_Transaction_History @StudNum = '109461010625';
+GO
+
+-- ? Used in settings.php
+-- ? Populate student data so that student can easily edit what to edit.
+
+CREATE PROCEDURE R_Get_Stud_Info_For_Settings
+    @StudNum VARCHAR(12)
+AS
+BEGIN
+    SELECT Student_Number, Student_Name, Student_Email
+    FROM Student
+    WHERE Student_Number = @StudNum;
+END
+GO
+
+EXEC R_Get_Stud_Info_For_Settings @StudNum = '109461060128';
+GO
+
+-- ? Used in: (Student) dashboard.php -> welcome_card.php and header.php 
+-- ? Retrieve the current student user name.
+
+CREATE PROCEDURE R_Get_Stud_Name_For_Display
+    @StudNum VARCHAR(12)
+AS
+BEGIN
+    SELECT Student_Name
+    FROM Student
+    WHERE Student_Number = @StudNum;
+END
+GO
+
+EXEC R_Get_Stud_Name_For_Display @StudNum = '109461010626';
+GO
+
+-- ? Used in books-add/edit.php -> call_categories.php 
+-- ? Retrieve the book categories to be rendered in the form.
+
+CREATE PROCEDURE R_Get_Book_Categories
+AS
+BEGIN
+    SELECT Category_Name AS 'Category'
+    FROM Book_Category;
+END
+GO
+
+EXEC R_Get_Book_Categories;
+GO
+
+-- ? Used in books-add/edit.php
+-- ? Retrieve the id based on the category name.
+
+CREATE PROCEDURE R_Get_Category_Name
+    @Cat_Name VARCHAR(100)
+AS
+BEGIN
+    SELECT Category_ID
+    FROM Book_Category
+    WHERE Category_Name = @Cat_Name;
+END
+GO
+
+EXEC R_Get_Category_Name @Cat_Name = 'Fiction';
+GO

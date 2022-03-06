@@ -3,6 +3,7 @@ session_start();
 error_reporting(0);
 $current_student = $_SESSION['student_login'];
 include('../../includes/config.php');
+include('call_db/call_stud_name.php');
 ?>
 
 <!DOCTYPE html>
@@ -18,6 +19,17 @@ include('../../includes/config.php');
     <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
     <link rel="stylesheet" href="../../assets/node_modules/bootstrap-icons/font/bootstrap-icons.css" />
+    <!-- DATATABLES CSS -->
+    <link rel="stylesheet" type="text/css"
+        href="../../assets/node_modules/datatables.net-bs5/css/dataTables.bootstrap5.css">
+    <link rel="stylesheet" type="text/css"
+        href="../../assets/node_modules/datatables.net-bs5/css/dataTables.bootstrap5.min.css">
+    <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
+    <script>
+    $(document).ready(function() {
+        $('#book_table').DataTable();
+    });
+    </script>
 </head>
 
 <body>
@@ -26,13 +38,51 @@ include('../../includes/config.php');
         <div class="overall-body">
             <?php include('includes/nav.php') ?>
             <div class="output-panel">
-                Transaction View By the Student Currently Logged In goes here!
+                <h3>Your Currently Borrowed Books</h3>
+                <div class="output-overflow">
+                    <div class="panel panel-default">
+                        <div class="panel-body">
+                            <div class="table-responsive">
+                                <table id="book_table" class="table table-hover">
+                                    <caption>List of Books</caption>
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">Book Borrowed</th>
+                                            <th scope="col">Student Name</th>
+                                            <th scope="col">Number of Copies</th>
+                                            <th scope="col">Status</th>
+                                            <th scope="col">Borrow Date</th>
+                                            <th scope="col">Return Date</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <?php include('./call_db/get_book_list.php') ?>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                    </div>
+                </div>
             </div>
         </div>
         <?php include('includes/footer.php') ?>
     </div>
+    <script src="../../assets/node_modules/jquery/dist/jquery.min.js"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="../../assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
+    <!-- DATA TABLE SCRIPTS -->
+    <script type="text/javascript" charset="utf8"
+        src="../../assets/node_modules/datatables.net/js/jquery.dataTables.js">
+    </script>
+    <script type="text/javascript" charset="utf8"
+        src="../../assets/node_modules/datatables.net/js/jquery.dataTables.min.js">
+    </script>
+    <script type="text/javascript" charset="utf8"
+        src="../../assets/node_modules/datatables.net-bs5/js/dataTables.bootstrap5.js">
+    </script>
+    <script type="text/javascript" charset="utf8"
+        src="../../assets/node_modules/datatables.net-bs5/js/dataTables.bootstrap5.min.js">
+    </script>
 </body>
 
 </html>

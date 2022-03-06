@@ -82,14 +82,18 @@ if ($_SESSION['login'] != '') {
                                             $statement = sqlsrv_prepare($connection, $query, $params);
                                             $result = sqlsrv_execute($statement);
                                             $row = sqlsrv_fetch_array($statement);
-                                            if ($result === TRUE) {
-                                                if ($row['Student_Number'] == $student_number and password_verify($password, $row['Student_Password'])) {
-                                                    $_SESSION['student_login'] = $row['Student_Number'];
-                                                    $_SESSION['login_stud_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 2000});</script>";;
-                                                    header("Location: dashboard/student/dashboard.php");
+                                            if ($result) {
+                                                // Student_Status = 1 means the student is active
+                                                if ($row['Student_Status'] == 0) {
+                                                    echo "<label class='text-danger'>Your account is blocked. Contact school librarian.</label>";
                                                 } else {
-                                                    var_dump($student_number, $password);
-                                                    echo "<label class='text-danger'>Invalid username or password.</label>";
+                                                    if ($row['Student_Number'] == $student_number and password_verify($password, $row['Student_Password'])) {
+                                                        $_SESSION['student_login'] = $row['Student_Number'];
+                                                        $_SESSION['login_stud_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 2000});</script>";;
+                                                        header("Location: dashboard/student/dashboard.php");
+                                                    } else {
+                                                        echo "<label class='text-danger'>Invalid student number or password.</label>";
+                                                    }
                                                 }
                                             } else {
                                                 echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";

@@ -113,8 +113,7 @@ include('../../includes/config.php');
                             ?>
                         </div>
                         <div class="buttons-for-login">
-                            <button onClick="addBook()" type="submit" name="add_books" id="submit-book-data"
-                                class="btn btn-secondary">Add
+                            <button type="submit" name="add_books" id="submit-book-data" class="btn btn-secondary">Add
                                 Book</button>
                         </div>
                     </form>

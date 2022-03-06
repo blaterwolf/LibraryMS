@@ -59,7 +59,7 @@ elseif (basename($_SERVER['PHP_SELF']) == 'transactions.php') :
         <i class="bi bi-clipboard-check-fill"></i>&emsp;
         BORROW BOOKS
     </a>
-    <a id="archive-log" type="button" class="btn btn-primary text-start" href="transactionss.php">
+    <a id="archive-log" type="button" class="btn btn-primary text-start" href="transactions.php">
         <i class="bi bi-archive-fill"></i>&emsp;
         ARCHIVE LOG
     </a>

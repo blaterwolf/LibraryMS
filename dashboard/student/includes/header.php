@@ -4,7 +4,7 @@
         <div class="btn-group">
             <button type="button" class="btn btn-secondary dropdown-toggle" data-bs-toggle="dropdown"
                 data-bs-display="static" aria-expanded="false">
-                <?php print_r($current_student) ?>
+                <?php print_r($g_student_name) ?>
             </button>
             <ul class="dropdown-menu dropdown-menu-end dropdown-menu-lg-start">
                 <li><a class="dropdown-item" href="settings.php">Settings</a></li>

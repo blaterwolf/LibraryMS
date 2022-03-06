@@ -3,6 +3,7 @@ session_start();
 error_reporting(0);
 $current_student = $_SESSION['student_login'];
 include('../../includes/config.php');
+include('call_db/call_stud_name.php');
 ?>
 
 <!DOCTYPE html>

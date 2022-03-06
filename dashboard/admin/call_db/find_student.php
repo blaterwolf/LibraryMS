@@ -15,7 +15,11 @@ while ($row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC)) {
         } else if ($key == 'Email') {
             echo "<td>" . $value . "</td>";
         } else if ($key == 'Status') {
-            echo "<td>" . $value . "</td>";
+            if ($value == 1) {
+                echo "<td><span class='badge bg-success'>Active</span></td>";
+            } else {
+                echo "<td><span class='badge bg-danger'>Blocked</span></td>";
+            }
         }
         if ($rowCount == count($row)) {
             echo "</tr>";
