@@ -299,3 +299,148 @@ GO
 
 EXEC R_Get_Category_Name @Cat_Name = 'Fiction';
 GO
+
+-- ? Used in issue_books.php
+-- ? Returns all of the currently return books to be shown in a datalist.
+
+CREATE PROCEDURE R_Get_Checked_Return_Books
+    @Book VARCHAR(100),
+    @Student VARCHAR(100),
+    @Copies INT
+AS
+BEGIN
+    SELECT
+        Borrow_ID,
+        Book_Name AS 'Book',
+        Student_Name AS 'Student',
+        Borrow_Copies_Got AS 'Copies'
+    FROM Borrow
+        LEFT JOIN Book
+        ON Borrow.Borrow_Book_ID = Book.Book_ID
+        LEFT JOIN Student
+        ON Borrow.Borrow_Student_ID = Student.Student_ID
+    WHERE 
+Book_Name = @Book AND
+        Student_Name = @Student AND
+        Borrow_Copies_Got = @Copies;
+END
+GO
+
+-- ? Used in issue_books.php
+-- ? Check for the data provided by the use to avoid exploits.
+
+CREATE PROCEDURE R_Get_Checked_Return_Books
+    @Book VARCHAR(100),
+    @Student VARCHAR(100),
+    @Copies INT
+AS
+BEGIN
+    SELECT
+        Borrow_ID,
+        Book_Name AS 'Book',
+        Student_Name AS 'Student',
+        Borrow_Copies_Got AS 'Copies'
+    FROM Borrow
+        LEFT JOIN Book
+        ON Borrow.Borrow_Book_ID = Book.Book_ID
+        LEFT JOIN Student
+        ON Borrow.Borrow_Student_ID = Student.Student_ID
+    WHERE 
+Book_Name = @Book AND
+        Student_Name = @Student AND
+        Borrow_Copies_Got = @Copies;
+END
+GO
+
+-- EXEC R_Get_Checked_Return_Books @Book = 'The Hunger Games', @Student = 'George Davidson', @Copies = 3;
+-- GO
+
+CREATE PROCEDURE U_Return_Books
+    @BorrowID VARCHAR(36),
+    @BookID VARCHAR(36),
+    @Copies INT
+AS
+BEGIN
+    -- * UPDATE THE NUMBER OF COPIES OF BOOK BASED ON COPIES
+    UPDATE Book
+    SET Book_Copies_Current += @Copies
+    WHERE Book_ID = @BookID;
+
+    -- * UPDATE TO AVAILABLE (Book_Status) KAPAG BOOK_COPIES_CURRENT > 0
+    UPDATE Book
+    SET Book_Status = 1
+    WHERE Book_ID = @BookID AND Book_Copies_Current > 0;
+
+    UPDATE Borrow
+    SET Borrow_Status = 1
+    WHERE Borrow_ID = @BorrowID;
+END
+GO
+
+CREATE PROCEDURE R_Get_Book_Names_For_Search
+AS
+BEGIN
+    SELECT Book_Name AS 'Books'
+    FROM Book;
+END
+GO
+
+EXEC R_Get_Book_Names_For_Search;
+GO
+
+SELECT *
+FROM Book;
+GO
+
+-- ? Used in book-edit.php
+-- ? Retrieves the data of the book to be edited.
+
+CREATE PROCEDURE R_Get_Book_To_Edit
+    @BookName VARCHAR(100)
+AS
+BEGIN
+    SELECT
+        Book_ID,
+        Book_ISBN,
+        Book_Name,
+        Book_Author,
+        Book_Description,
+        Category_Name,
+        Book_Copies_Actual,
+        Book_Copies_Current
+    FROM Book
+        LEFT JOIN Book_Category
+        ON Book.Book_Category_ID = Book_Category.Category_ID
+    WHERE Book_Name = @BookName;
+END
+GO
+
+EXEC R_Get_Book_To_Edit @BookName = 'Ready Player One';
+GO
+
+CREATE PROCEDURE U_Edit_Book
+    @BookID VARCHAR(36),
+    @ISBN VARCHAR(13),
+    @Name VARCHAR(100),
+    @Author VARCHAR(100),
+    @Description VARCHAR(500),
+    @CatID INT,
+    @Status INT,
+    @CopiesActual INT,
+    @CopiesCurrent INT
+AS
+BEGIN
+    UPDATE Book
+    SET
+    Book_ISBN = @ISBN,
+    Book_Name = @Name,
+    Book_Author = @Author, 
+    Book_Description = @Description,
+    Book_Category_ID = @CatID,
+    Book_Status = @Status,
+    Book_Copies_Actual = @CopiesActual,
+    Book_Copies_Current = @CopiesCurrent
+    WHERE 
+    Book_ID = @BookID;
+END
+GO

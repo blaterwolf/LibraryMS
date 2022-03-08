@@ -24,7 +24,7 @@ if (basename($_SERVER['PHP_SELF']) == 'dashboard-home.php' or basename($_SERVER[
     </a>
 </div>
 <?php
-elseif (basename($_SERVER['PHP_SELF']) == 'books-add.php' or basename($_SERVER['PHP_SELF']) == 'books-edit.php') :
+elseif (basename($_SERVER['PHP_SELF']) == 'books-add.php' or basename($_SERVER['PHP_SELF']) == 'books-edit-search.php') :
 ?>
 <div class="nav-panel btn-group-vertical">
     <a id="home" type="button" class="btn btn-primary text-center" href="dashboard-home.php">

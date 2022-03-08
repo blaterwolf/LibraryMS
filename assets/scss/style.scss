@@ -230,6 +230,14 @@ body {
 
 .card-override {
   padding: 20px;
+
+  & .form-control {
+    width: 75%;
+  }
+}
+
+.card-override-special {
+  padding: 20px;
 }
 
 @import "../node_modules/bootstrap/scss/bootstrap";

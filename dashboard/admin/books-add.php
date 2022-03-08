@@ -12,7 +12,7 @@ include('../../includes/config.php');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard (Admin) | LibraryMS (PHP Edition)</title>
+    <title>Add Books (Admin) | LibraryMS (PHP Edition)</title>
     <!-- CUSTOM STYLE  -->
     <link href="../../assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
@@ -36,7 +36,7 @@ include('../../includes/config.php');
                         <i class="bi bi-plus-circle"></i>&emsp;
                         Add Book
                     </a>
-                    <a class="each-card btn btn-primary text-start" href="books-edit.php">
+                    <a class="each-card btn btn-primary text-start" href="books-edit-search.php">
                         <i class="bi bi-pencil"></i>&emsp;
                         Edit Book
                     </a>
@@ -105,7 +105,7 @@ include('../../includes/config.php');
                                     $_SESSION['insert_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully added book!',showConfirmButton: false,timer: 2000});</script>";
                                     echo $_SESSION['insert_message'];
                                     unset($_SESSION['insert_message']);
-                                    header("Refresh:0");
+                                    header("Refresh: 0");
                                 } else {
                                     echo "<label class='text-danger'>Something went wrong. Please try again.</label>";
                                 }

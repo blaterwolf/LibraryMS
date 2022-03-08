@@ -12,7 +12,7 @@ $current_librarian = $_SESSION['admin_login'];
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard (Admin) | LibraryMS (PHP Edition)</title>
+    <title>Archive Log (Admin) | LibraryMS (PHP Edition)</title>
     <!-- CUSTOM STYLE  -->
     <link href="../../assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
