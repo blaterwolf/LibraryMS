@@ -140,9 +140,20 @@ body {
     display: flex;
     align-items: center;
     padding: 10px;
-    font-size: 20px;
     font-weight: 500;
     border-radius: 0;
+  }
+
+  @media (min-height: 725px) {
+    .btn {
+      font-size: 18px;
+    }
+  }
+
+  @media (min-height: 850px) {
+    .btn {
+      font-size: 20px;
+    }
   }
 }
 
@@ -168,11 +179,28 @@ body {
 
   .output-overflow {
     position: fixed;
-    overflow: scroll;
-    padding: 10px;
     width: 75%;
-    height: 375px;
-    z-index: 0;
+    z-index: 2;
+    border-radius: 10px;
+    box-shadow: 0 2px 8px 0 rgba(26, 34, 37, 0.15);
+
+    .panel-default {
+      padding: 20px;
+    }
+  }
+
+  @media (min-height: 725px) {
+    .output-overflow {
+      max-height: 350px;
+      overflow: auto;
+    }
+  }
+
+  @media (min-height: 850px) {
+    .output-overflow {
+      max-height: 540px;
+      overflow: auto;
+    }
   }
 
   .output-overflow-stud {

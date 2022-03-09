@@ -41,6 +41,12 @@ ___
 ###### v0.6.0
 * Finished the Edit Book feature for the Admin Side. There are 4 more things to build before we can say that this is the v1.0.0
 * There are no other updates aside from this feature. Just some additional procedures were added to the `procedures.sql` and unnecessary comments were removed.
+
+###### v0.7.0
+* All Admin Side Implementations are 90% complete!
+* The only thing to be implemented there is the Archive Log section.
+* Also updated all names that are still using hypens to underscores. If there is an event of a 404, this will be fixed in the following update.
+* There are also niche updates in the following updates.
 ___
 ### Installation and Setup
 All guides for setting up and installing the LibraryMS (PHP Edition) on your local device will be posted once the project reaches v1.0.0 or to the point that it is almost complete.

@@ -444,3 +444,26 @@ BEGIN
     Book_ID = @BookID;
 END
 GO
+
+CREATE PROCEDURE R_Get_Student_Info_For_Edit
+    @StudNum VARCHAR(12)
+AS
+BEGIN
+    SELECT Student_ID, Student_Number, Student_Name, Student_Email, Student_Status
+    FROM Student
+    WHERE Student_Number = @StudNum;
+END
+GO
+
+CREATE PROCEDURE R_Get_Return_Books
+AS
+BEGIN
+    SELECT
+        Book_Name + ' - ' + Student_Name + ' - ' + CAST(Borrow_Copies_Got AS VARCHAR) + ' Copies' AS 'Return Books'
+    FROM Borrow
+        LEFT JOIN Book
+        ON Borrow.Borrow_Book_ID = Book.Book_ID
+        LEFT JOIN Student
+        ON Borrow.Borrow_Student_ID = Student.Student_ID
+    WHERE Borrow_Status != 1;
+END

@@ -33,17 +33,17 @@ include('../../includes/config.php');
             <?php include('includes/nav.php') ?>
             <div class="output-panel">
                 <div class="nav-card">
-                    <a class="each-card btn btn-primary text-start" href="books-add.php">
+                    <a class="each-card btn btn-primary text-start" href="books_add.php">
                         <i class="bi bi-plus-circle"></i>&emsp;
                         Add Book
                     </a>
-                    <a class="each-card btn btn-primary text-start active" href="books-edit-search.php">
+                    <a class="each-card btn btn-primary text-start active" href="books_search.php">
                         <i class="bi bi-pencil"></i>&emsp;
                         Edit Book
                     </a>
                 </div>
                 <div class="card-override-special">
-                    <a href="books-edit-search.php" type="text" name="submit_edit_book"
+                    <a href="books_search.php" type="text" name="submit_edit_book"
                         class="btn btn-outline-secondary mb-3" form="edit_book_form"><i
                             class="bi bi-arrow-left"></i>&nbsp;&nbsp;<b>Go Back</b></a>
                     <div class="card">
@@ -61,7 +61,7 @@ include('../../includes/config.php');
                             $row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC);
                             if ($row == NULL) {
                                 $_SESSION['edit_book_message'] = "<script>Swal.fire({icon: 'error',title: 'Book not found!',text: 'The book you entered did not match anything in the database.',showConfirmButton: false,timer: 3000});</script>";
-                                header("Location: books-edit-search.php");
+                                header("Location: books_search.php");
                             } else {
                                 $_SESSION['book_id'] = $row['Book_ID'];
                                 $book_isbn = $row['Book_ISBN'];
@@ -175,11 +175,11 @@ include('../../includes/config.php');
                                         if ($result) {
                                             $_SESSION['edit_book_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully edited book!',showConfirmButton: false,timer: 2000});</script>";
                                             unset($_SESSION['book_id']);
-                                            header("Location: books-edit-search.php");
+                                            header("Location: books_search.php");
                                         } else {
                                             $_SESSION['edit_book_message'] = "<script>Swal.fire({icon: 'error',title: 'Unsuccessful editing book!',text: 'basta may error beh.', showConfirmButton: false,timer: 2000});</script>";
                                             unset($_SESSION['book_id']);
-                                            header("Location: books-edit-search.php");
+                                            header("Location: books_search.php");
                                         }
                                         die();
                                         exit();

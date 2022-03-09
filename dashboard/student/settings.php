@@ -54,7 +54,7 @@ include('call_db/call_stud_name.php');
                                                     class="text-danger">*</span> <span
                                                     class='badge bg-warning text-dark'>Only Editable by Librarian</span>
                                             </label>
-                                            <input disabled required name="student_number" type="number"
+                                            <input readonly required name="student_number" type="number"
                                                 class="form-control" id="student_number" placeholder="1234567890123"
                                                 value="<?= $r_student_number ?>" maxlength="12">
                                         </div>

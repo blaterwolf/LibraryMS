@@ -127,7 +127,7 @@ if ($_SESSION['admin_login'] != '') {
                                                     // * Store javascript code in the session variable so that it can be used in the next page.
                                                     // * Tagapagligtas: https://stackoverflow.com/a/4873865/14043411
                                                     $_SESSION['message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 1500});</script>";
-                                                    header("Location: dashboard/admin/dashboard-home.php");
+                                                    header("Location: dashboard/admin/dashboard_home.php");
                                                 } else {
                                                     echo "<label class='text-danger'>Invalid username or password.</label>";
                                                 }
