@@ -1,8 +1,13 @@
 <?php
 session_start();
 error_reporting(0);
-$current_librarian = $_SESSION['admin_login'];
+$current_librarian = $_SESSION['admin_login']['username'];
+if (empty($current_librarian) or !isset($_SESSION["admin_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
+include('call_db/call_admin_name.php');
 ?>
 
 <!DOCTYPE html>
@@ -68,7 +73,8 @@ include('../../includes/config.php');
                                             <?php
                                             if (isset($_POST['submit_return'])) {
                                                 $return_data = $_POST['return_category'];
-                                                if (count(explode(' - ', $return_data)) != 3) {
+                                                // var_dump(explode(' - ', $return_data));
+                                                if (count(explode(' - ', $return_data)) != 4) {
                                                     // gets ko na kung bakit lumalabas yung invalid captcha
                                                     // kasi napiprint agad to bago i-unset and nasatisfy naman yung condition
                                                     // kahit null siya.
@@ -80,9 +86,10 @@ include('../../includes/config.php');
                                                     $book_name = $return_data[0];
                                                     $student_name = $return_data[1];
                                                     $copies_got = (int)explode(' ', $return_data[2])[0];
-                                                    $params = array(&$book_name, &$student_name, &$copies_got);
+                                                    $borrow_id_partial = explode(' ', $return_data[3])[1];
+                                                    $params = array(&$book_name, &$student_name, &$copies_got, &$borrow_id_partial);
                                                     $connection = sqlsrv_connect($server, $connectionInfo);
-                                                    $query = "EXEC R_Get_Checked_Return_Books @Book = ?, @Student = ?, @Copies = ?;";
+                                                    $query = "EXEC R_Get_Checked_Return_Books @Book = ?, @Student = ?, @Copies = ?, @BorrowIDRef = ?;";
                                                     $statement = sqlsrv_prepare($connection, $query, $params);
                                                     $result = sqlsrv_execute($statement);
                                                     $row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC);

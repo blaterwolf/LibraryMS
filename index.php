@@ -3,7 +3,11 @@ session_start();
 error_reporting(0);
 include('includes/config.php');
 if ($_SESSION['admin_login'] != '') {
-    $_SESSION['admin_login'] = '';
+    header("location: dashboard/admin/dashboard_home.php");
+    exit;
+} else if ($_SESSION['student_login'] != '') {
+    header("location: dashboard/student/dashboard.php");
+    exit;
 }
 ?>
 

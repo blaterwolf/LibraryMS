@@ -125,6 +125,13 @@ body {
   }
 }
 
+.go-back-login {
+  padding: 10px 0px 10px 40px;
+  display: flex;
+  flex-direction: row;
+  justify-content: start;
+}
+
 // DASHBOARD RELATED STYLES
 
 .overall-body {
@@ -179,7 +186,7 @@ body {
 
   .output-overflow {
     position: fixed;
-    width: 75%;
+    width: 81%;
     z-index: 2;
     border-radius: 10px;
     box-shadow: 0 2px 8px 0 rgba(26, 34, 37, 0.15);
@@ -258,10 +265,6 @@ body {
 
 .card-override {
   padding: 20px;
-
-  & .form-control {
-    width: 75%;
-  }
 }
 
 .card-override-special {

@@ -4,13 +4,7 @@ A Simple School Library Management System for a school library that manages the 
 [![PHP 8.1.1](https://img.shields.io/badge/php-8.1.1-purple?logo=php&logoColor=B0B3D6)](https://www.php.net/downloads.php)
 ___
 ### Domain Description
-Final description will be posted soon!
-___
-### Relational Schema
-Images will be posted soon!
-___
-### Database Diagram
-Images will be posted soon!
+In a school library, a student would want to borrow a book or any materials that are currently available in it. A librarian is available to issue a book to be borrowed by a student. With the ongoing emergence of technology, we can digitalize the process of borrowing a book into the library. A school library keeps track of the data of the books relating to its quantity and availability. With that, the school library has access to all student information and thus can add and update the status of the student’s information. Each borrowed book is issued by a student then the return will be issued. When the student returns the book, the librarian will process the return and confirm the return of the material from the student.
 ___
 ### Changelog
 ###### v0.1.0
@@ -47,6 +41,10 @@ ___
 * The only thing to be implemented there is the Archive Log section.
 * Also updated all names that are still using hypens to underscores. If there is an event of a 404, this will be fixed in the following update.
 * There are also niche updates in the following updates.
+
+###### v1.0.0 (Presentation Version)
+* It took me a long time to push this to github. Actually, by this point nakalimutan ko na kung ano ang nangyari sa project na 'to lol. But anyhow, this is the presentation version and the only bug that remains here is yung about sa Captcha sa Signup and Login which is a minor one.
+* But anyway, everything is complete, but my documentation for the Stored Procedures isn't. At this point, idedelete ko na siya lmao.
+* Sorry future self for being ✨lazy✨
+* I've also deleted some sections from the changelog and I'm ready to move on for the next project. :) Thank you 1st semester.
 ___
-### Installation and Setup
-All guides for setting up and installing the LibraryMS (PHP Edition) on your local device will be posted once the project reaches v1.0.0 or to the point that it is almost complete.

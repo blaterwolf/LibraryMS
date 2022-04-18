@@ -1,9 +1,9 @@
 <?php
 
 // autofill the forms with the current student information in the database
-$params = array(&$current_student);
+$params = array(&$_SESSION['student_login']['student_id']);
 $connection = sqlsrv_connect($server, $connectionInfo);
-$query = "EXEC R_Get_Stud_Info_For_Settings @StudNum = ?;";
+$query = "EXEC R_Get_Stud_Info_For_Settings @StudID = ?;";
 $statement = sqlsrv_prepare($connection, $query, $params);
 $result = sqlsrv_execute($statement);
 $row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC);

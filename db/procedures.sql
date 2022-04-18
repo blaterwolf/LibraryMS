@@ -467,3 +467,98 @@ BEGIN
         ON Borrow.Borrow_Student_ID = Student.Student_ID
     WHERE Borrow_Status != 1;
 END
+GO
+
+CREATE PROCEDURE R_Get_Admin_Name_For_Display
+    @Username VARCHAR(100)
+AS
+BEGIN
+    SELECT AdminName
+    FROM Admin
+    WHERE AdminUsername = @Username;
+END
+GO
+
+CREATE PROCEDURE R_Check_Student_Number
+    @StudNum VARCHAR(12)
+AS
+BEGIN
+    SELECT Student_Number
+    FROM Student
+    WHERE Student_Number = @StudNum;
+END
+GO
+
+CREATE PROCEDURE U_Update_Category_Name
+    @CatID INT,
+    @Name VARCHAR(100)
+AS
+BEGIN
+    UPDATE Book_Category
+SET Category_Name = @Name
+WHERE Category_ID = @CatID
+END
+GO
+
+CREATE PROCEDURE R_Get_Admin_Info_For_Settings
+    @Username VARCHAR(20)
+AS
+BEGIN
+    SELECT AdminID, AdminName, AdminUsername
+    FROM Admin
+    WHERE AdminUsername = @Username;
+END
+GO
+
+CREATE PROCEDURE U_Admin_Info_Settings
+    @Name VARCHAR(100),
+    @Username VARCHAR(20),
+    @Password VARCHAR(255),
+    @AdminID VARCHAR(36)
+AS
+BEGIN
+    UPDATE Admin
+    SET AdminName = @Name, AdminUsername = @Username, AdminPassword = @Password
+    WHERE AdminID = @AdminID;
+END
+GO
+
+CREATE PROCEDURE R_Admin_Login
+    @Username VARCHAR(20)
+AS
+BEGIN
+    SELECT AdminUsername, AdminPassword
+    FROM Admin
+    WHERE AdminUsername = @Username;
+END
+GO
+
+EXEC R_Admin_Login @Username = 'admin';
+GO
+
+CREATE PROCEDURE R_Check_Username_Exists
+    @Username VARCHAR(20)
+AS
+BEGIN
+    SELECT AdminUsername
+    FROM Admin
+    WHERE AdminUsername = @Username;
+END
+GO
+
+EXEC R_Check_Username_Exists @Username = 'admin';
+GO
+
+CREATE PROCEDURE C_Add_New_Librarian
+    @AdminID VARCHAR(36),
+    @Name VARCHAR(100),
+    @Username VARCHAR(20),
+    @Password VARCHAR(255)
+AS
+BEGIN
+    INSERT INTO Admin
+        (AdminID, AdminName, AdminUsername, AdminPassword)
+    VALUES
+        (@AdminID, @Name, @Username, @Password);
+END
+GO

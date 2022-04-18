@@ -2,8 +2,12 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if ($_SESSION['student_login'] != '') {
-    $_SESSION['student_login'] = '';
+if ($_SESSION['admin_login'] != '') {
+    header("location: dashboard/admin/dashboard_home.php");
+    exit;
+} else if ($_SESSION['student_login'] != '') {
+    header("location: dashboard/student/dashboard.php");
+    exit;
 }
 ?>
 
@@ -77,31 +81,42 @@ if ($_SESSION['student_login'] != '') {
                                         $statement = sqlsrv_prepare($connection, $query, $params);
                                         $result = sqlsrv_execute($statement);
                                         $row = sqlsrv_fetch_array($statement);
-                                        if ($row['Student_Email'] == $email) {
-                                            // * Then check mo if equal password
-                                            if ($password == $retype_password) {
-                                                $password = password_hash($password, PASSWORD_DEFAULT);
-                                                $params = array(&$password, &$student_number);
-                                                $connection = sqlsrv_connect($server, $connectionInfo);
-                                                $query = "EXEC U_Update_Student_Password @Password = ?, @StudNum = ?;";
-                                                $statement = sqlsrv_prepare($connection, $query, $params);
-                                                $result = sqlsrv_execute($statement);
-                                                if ($result === TRUE) {
-                                                    // February 10, 2022 -> medyo gigil na ako di gumagana yung echo JS function na to...
-                                                    // GUMAGANA NA TO PAKIGAWAN LANG NG PARAAN PAANO I-RUN YUNG JAVASCRIPT SA ALERT.
-                                                    // include('functions/alert.php');
-                                                    // March 4, 2022 (17:45) -> reworking this since nabago nga database.
-                                                    // March 4, 2022 (~18:30) -> haha hello self gumagana na :D
-                                                    $_SESSION['FPW_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully updated your password!',text: 'Redirected you back to Login...',showConfirmButton: false,timer: 2000});</script>";
-                                                    header('Location: student_login.php');
-                                                } else {
-                                                    echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
-                                                }
+                                        // * Check if it yields results.
+                                        if ($row != null) {
+                                            // * Icheck whether yung student na 'to ay Active. Ibig sabihin, hindi siya nakablock.
+                                            if ($row['Student_Status'] == 0) {
+                                                echo "<label class='text-danger'>Your account is blocked. Contact school librarian.</label>";
                                             } else {
-                                                echo "<label class='text-danger'>Password does not match.</label>";
+                                                // * Check whether yung provided ni user na email ay equal sa tinype niya.
+                                                if ($row['Student_Email'] == $email) {
+                                                    // * Then check mo if equal password
+                                                    if ($password == $retype_password) {
+                                                        $password = password_hash($password, PASSWORD_DEFAULT);
+                                                        $params = array(&$password, &$student_number);
+                                                        $connection = sqlsrv_connect($server, $connectionInfo);
+                                                        $query = "EXEC U_Update_Student_Password @Password = ?, @StudNum = ?;";
+                                                        $statement = sqlsrv_prepare($connection, $query, $params);
+                                                        $result = sqlsrv_execute($statement);
+                                                        if ($result === TRUE) {
+                                                            // February 10, 2022 -> medyo gigil na ako di gumagana yung echo JS function na to...
+                                                            // GUMAGANA NA TO PAKIGAWAN LANG NG PARAAN PAANO I-RUN YUNG JAVASCRIPT SA ALERT.
+                                                            // include('functions/alert.php');
+                                                            // March 4, 2022 (17:45) -> reworking this since nabago nga database.
+                                                            // March 4, 2022 (~18:30) -> haha hello self gumagana na :D
+                                                            $_SESSION['FPW_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully updated your password!',text: 'Redirected you back to Login...',showConfirmButton: false,timer: 2000});</script>";
+                                                            header('Location: student_login.php');
+                                                        } else {
+                                                            echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
+                                                        }
+                                                    } else {
+                                                        echo "<label class='text-danger'>Password does not match.</label>";
+                                                    }
+                                                } else {
+                                                    echo "<label class='text-danger'>Invalid email address.</label>";
+                                                }
                                             }
                                         } else {
-                                            echo "<label class='text-danger'>Invalid email address.</label>";
+                                            echo "<label class='text-danger'>Invalid student number or email address provided.</label>";
                                         }
                                     }
                                 }

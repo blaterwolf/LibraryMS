@@ -1,28 +1,20 @@
 <?php
 $connection = sqlsrv_connect($server, $connectionInfo);
-$query = "EXEC R_Get_Find_Student";
+$query = 'EXEC R_Get_All_Admin;';
 $statement = sqlsrv_prepare($connection, $query);
 $result = sqlsrv_execute($statement);
 $rowCount = 1;
 
 while ($row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC)) {
     foreach ($row as $key => $value) {
-        if ($key == 'LRN Number') {
+        if ($key == 'AdminName') {
             echo "<tr>";
             echo "<td>" . $value . "</td>";
-        } else if ($key == 'Name') {
+        } else if ($key == 'AdminUsername') {
             echo "<td>" . $value . "</td>";
-        } else if ($key == 'Email') {
-            echo "<td>" . $value . "</td>";
-        } else if ($key == 'Status') {
-            if ($value == 1) {
-                echo "<td><span class='badge bg-success'>Active</span></td>";
-            } else {
-                echo "<td><span class='badge bg-danger'>Blocked</span></td>";
-            }
-        } else if ($key == 'Date Created') {
+        } else if ($key == 'CreateDate') {
             echo "<td>" . $value->format('Y-m-d H:i') . "</td>";
-        } else if ($key == 'Date Modified') {
+        } else if ($key == 'ModifiedDate') {
             if ($value == null) {
                 echo "<td><span class='badge bg-danger'>N/A</span></td>";
             } else {

@@ -19,7 +19,11 @@ session_start();
 error_reporting(0);
 include('includes/config.php');
 if ($_SESSION['admin_login'] != '') {
-    $_SESSION['admin_login'] = '';
+    header("location: dashboard/admin/dashboard_home.php");
+    exit;
+} else if ($_SESSION['student_login'] != '') {
+    header("location: dashboard/student/dashboard.php");
+    exit;
 }
 ?>
 
@@ -36,6 +40,7 @@ if ($_SESSION['admin_login'] != '') {
     <link href="assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/node_modules/bootstrap-icons/font/bootstrap-icons.css" />
     <!-- JQUERY -->
     <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
 </head>
@@ -44,6 +49,10 @@ if ($_SESSION['admin_login'] != '') {
     <div class="overall">
         <div class="left-panel">
             <?php include('includes/header_login.php') ?>
+            <div class="go-back-login">
+                <a href="index.php" type="text" name="go_back" class="btn btn-outline-primary"><i
+                        class="bi bi-arrow-left"></i>&nbsp;&nbsp;<b>Go Back</b></a>
+            </div>
             <div class="form">
                 <p class="fs-4 text-center">Admin Login</p>
                 <div class="form">
@@ -69,7 +78,7 @@ if ($_SESSION['admin_login'] != '') {
                         <div class="captcha-container">
                             <div class="form-floating mb-3">
                                 <input type="text" required class="form-control" id="floatingInput"
-                                    placeholder="Captcha" name="captcha" maxlength="5" autocomplete="off">
+                                    placeholder="Captcha" name="captcha" minlength="5" maxlength="5" autocomplete="off">
                                 <label for="floatingInput">Captcha</label>
                             </div>
                             <br />
@@ -99,45 +108,39 @@ if ($_SESSION['admin_login'] != '') {
                                         */
                                         $username = $_REQUEST['username'];
                                         $password = $_REQUEST['password'];
-                                        try {
-                                            $connection = sqlsrv_connect($server, $connectionInfo);
-                                            $query = "SELECT AdminUsername, AdminPassword FROM Admin;";
-                                            $statement = sqlsrv_prepare($connection, $query);
-                                            $result = sqlsrv_execute($statement);
-                                            /*
+                                        $params = array(&$username);
+                                        $connection = sqlsrv_connect($server, $connectionInfo);
+                                        $query = "EXEC R_Admin_Login @Username = ?;";
+                                        $statement = sqlsrv_prepare($connection, $query, $params);
+                                        $result = sqlsrv_execute($statement);
+                                        /*
                                             Stack Overflow: (https://stackoverflow.com/questions/19227419/why-is-sqlsrv-fetch-array-returning-null)
                                             The documentation, for sqlsrv_fetch_array, states:
                                             Returns an array on success, NULL if there are no more rows to return, and FALSE if an error occurs.
                                             A NULL result can therefore only mean that there are 0 results from your query.
-                                            */
-                                            $row = sqlsrv_fetch_array($statement);
-                                            // This is always True dahil meron at meron tayong mafefetch na data from the backend.
-                                            // In an event na ito ay false dahil maaaring may error na nga sa query, or may error sa connection,
-                                            // dapat may else statement.
-                                            if ($result === TRUE) {
-                                                // salamat Github Copilot :D
-                                                if ($row['AdminUsername'] == $username and password_verify($password, $row['AdminPassword'])) {
-                                                    $_SESSION['admin_login'] = $username;
-                                                    /*
+                                        */
+                                        $row = sqlsrv_fetch_array($statement);
+                                        // This is always True dahil meron at meron tayong mafefetch na data from the backend.
+                                        // In an event na ito ay false dahil maaaring may error na nga sa query, or may error sa connection,
+                                        // dapat may else statement.
+                                        if ($result) {
+                                            if ($row['AdminUsername'] == $username and password_verify($password, $row['AdminPassword'])) {
+                                                $_SESSION['admin_login'] = array('admin_id' => $row['AdminID'], 'username' => $username);
+                                                /*
                                                         From the original source code, ang gamit na code is:
-                                                            ?| echo "<script type='text/javascript'> document.location ='dashboard/admin/dashboard.php'; </script>";
+                                                            ? | echo "<script type='text/javascript'> document.location ='dashboard/admin/dashboard.php'; </script>";
                                                         Stack Overflow: https://stackoverflow.com/questions/15655017/window-location-js-vs-header-php-for-redirection
                                                         Sabi naman dyan sa article na walang pinagkaiba kung gagamitin ko JS or PHP header function so...
-                                                    */
-                                                    // * Store javascript code in the session variable so that it can be used in the next page.
-                                                    // * Tagapagligtas: https://stackoverflow.com/a/4873865/14043411
-                                                    $_SESSION['message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 1500});</script>";
-                                                    header("Location: dashboard/admin/dashboard_home.php");
-                                                } else {
-                                                    echo "<label class='text-danger'>Invalid username or password.</label>";
-                                                }
+                                                */
+                                                // * Store javascript code in the session variable so that it can be used in the next page.
+                                                // * Tagapagligtas: https://stackoverflow.com/a/4873865/14043411
+                                                $_SESSION['message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 1500});</script>";
+                                                header("Location: dashboard/admin/dashboard_home.php");
                                             } else {
-                                                echo "<label class='text-danger'>Database returns false or null. Call DB Admin.</label>";
+                                                echo "<label class='text-danger'>Invalid username or password.</label>";
                                             }
-                                        } catch (PDOException $e) {
-                                            // di ko alam gagawin sa error message na to since kinopya ko nga lang to from the previous code
-                                            // but hindi naman umaabot sa point na to so I guess don't fix what's not broken
-                                            exit("Error: " . $e->getMessage());
+                                        } else {
+                                            echo "<label class='text-danger'>Something went wrong. Try again later.</label>";
                                         }
                                     }
                                 }

@@ -3,8 +3,12 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if ($_SESSION['login'] != '') {
-    $_SESSION['login'] = '';
+if ($_SESSION['admin_login'] != '') {
+    header("location: dashboard/admin/dashboard_home.php");
+    exit;
+} else if ($_SESSION['student_login'] != '') {
+    header("location: dashboard/student/dashboard.php");
+    exit;
 }
 ?>
 
@@ -21,6 +25,7 @@ if ($_SESSION['login'] != '') {
     <link href="assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
     <link href="https://fonts.googleapis.com/css?family=Inter" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/node_modules/bootstrap-icons/font/bootstrap-icons.css" />
     <!-- JQUERY -->
     <script src="assets/node_modules/jquery/dist/jquery.js"></script>
     <!-- SWEETALERT, SANA GUMANA KA NA. -->
@@ -39,10 +44,13 @@ if ($_SESSION['login'] != '') {
         unset($_SESSION['FPW_message']);
     }
     ?>
-    <!-- MAIN -->
     <div class="overall">
         <div class="left-panel">
             <?php include('includes/header_login.php') ?>
+            <div class="go-back-login">
+                <a href="index.php" type="text" name="go_back" class="btn btn-outline-primary"><i
+                        class="bi bi-arrow-left"></i>&nbsp;&nbsp;<b>Go Back</b></a>
+            </div>
             <div class="form">
                 <p class="fs-4 text-center">Student Login</p>
                 <div class="form">
@@ -74,32 +82,30 @@ if ($_SESSION['login'] != '') {
                                         echo "<label class='text-danger'>Invalid captcha.</label>";
                                     } else {
                                         $student_number = $_REQUEST['student_number'];
-                                        $password = ($_REQUEST['password']);
-                                        try {
-                                            $params = array(&$student_number);
-                                            $connection = sqlsrv_connect($server, $connectionInfo);
-                                            $query = "EXEC R_Get_Stud_Login_Info @StudNum = ?;";
-                                            $statement = sqlsrv_prepare($connection, $query, $params);
-                                            $result = sqlsrv_execute($statement);
-                                            $row = sqlsrv_fetch_array($statement);
-                                            if ($result) {
-                                                // Student_Status = 1 means the student is active
-                                                if ($row['Student_Status'] == 0) {
-                                                    echo "<label class='text-danger'>Your account is blocked. Contact school librarian.</label>";
-                                                } else {
-                                                    if ($row['Student_Number'] == $student_number and password_verify($password, $row['Student_Password'])) {
-                                                        $_SESSION['student_login'] = $row['Student_Number'];
-                                                        $_SESSION['login_stud_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 2000});</script>";;
-                                                        header("Location: dashboard/student/dashboard.php");
-                                                    } else {
-                                                        echo "<label class='text-danger'>Invalid student number or password.</label>";
-                                                    }
-                                                }
+                                        $password = $_REQUEST['password'];
+                                        $params = array(&$student_number);
+                                        $connection = sqlsrv_connect($server, $connectionInfo);
+                                        // * check whether this student number exists sa database.
+                                        $query = "EXEC R_Get_Stud_Login_Info @StudNum = ?;";
+                                        $statement = sqlsrv_prepare($connection, $query, $params);
+                                        $result = sqlsrv_execute($statement);
+                                        $row = sqlsrv_fetch_array($statement);
+                                        if ($result) {
+                                            // * Student_Status = 1 means the student is active
+                                            if ($row['Student_Status'] == 0) {
+                                                echo "<label class='text-danger'>Your account is blocked. Contact school librarian.</label>";
                                             } else {
-                                                echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
+                                                // * check whether the password is correct and student number from database is equal sa provided na student number.
+                                                if ($row['Student_Number'] == $student_number and password_verify($password, $row['Student_Password'])) {
+                                                    $_SESSION['student_login'] = array('student_id' => $row['Student_ID'], 'student_number' => $row['Student_Number']);
+                                                    $_SESSION['login_stud_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully logged in!',showConfirmButton: false,timer: 2000});</script>";;
+                                                    header("Location: dashboard/student/dashboard.php");
+                                                } else {
+                                                    echo "<label class='text-danger'>Invalid student number or password.</label>";
+                                                }
                                             }
-                                        } catch (PDOException $e) {
-                                            exit("Error: " . $e->getMessage());
+                                        } else {
+                                            echo "<label class='text-danger'>SQL returns false or null. Call DB Admin.</label>";
                                         }
                                     }
                                 }

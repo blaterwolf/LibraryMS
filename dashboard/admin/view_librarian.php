@@ -17,7 +17,7 @@ include('call_db/call_admin_name.php');
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Dashboard Home (Admin) | LibraryMS (PHP Edition)</title>
+    <title>View Librarian (Admin) | LibraryMS (PHP Edition)</title>
     <!-- CUSTOM STYLE  -->
     <link href="../../assets/css/style.css" rel="stylesheet" />
     <!-- GOOGLE FONT -->
@@ -31,9 +31,7 @@ include('call_db/call_admin_name.php');
     <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
     <script>
     $(document).ready(function() {
-        $('#book_table').DataTable({
-            "bInfo": false
-        });
+        $('#book_table').DataTable();
     });
     </script>
 </head>
@@ -44,40 +42,25 @@ include('call_db/call_admin_name.php');
         <div class="overall-body">
             <?php include('includes/nav.php') ?>
             <div class="output-panel">
-                <?php include('includes/welcome_card.php') ?>
-                <div class="nav-card">
-                    <a class="each-card btn btn-primary text-start" href="dashboard_home.php">
-                        <i class="bi bi-list-task"></i>&emsp;
-                        Find Book
-                    </a>
-                    <a class="each-card btn btn-primary text-start" href="dashboard_borrow.php">
-                        <i class="bi bi-clipboard-check-fill"></i>&emsp;
-                        Find Book Issue
-                    </a>
-                    <a class="each-card btn btn-primary text-start active" href="dashboard_student.php">
-                        <i class="bi bi-person-fill"></i>&emsp;
-                        Find Student
-                    </a>
-                </div>
+                <h3>View All Librarian</h3>
+                <p>This part of the settings can only be seen by the administrator head.</p>
                 <div class="outside-card">
                     <div class="output-overflow">
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="table-responsive">
                                     <table id="book_table" class="table table-hover">
-                                        <caption>List of Students</caption>
+                                        <caption>List of Current Librarian</caption>
                                         <thead>
                                             <tr>
-                                                <th scope="col">LRN Number</th>
-                                                <th scope="col">Name</th>
-                                                <th scope="col">Email</th>
-                                                <th scope="col">Status</th>
-                                                <th scope="col">Date Created</th>
-                                                <th scope="col">Date Modified</th>
+                                                <th>Name</th>
+                                                <th>Username</th>
+                                                <th>Create Date</th>
+                                                <th>Modified Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
-                                            <?php include('./call_db/find_student.php') ?>
+                                            <?php include('./call_db/find_admin.php') ?>
                                         </tbody>
                                     </table>
                                 </div>
@@ -89,22 +72,8 @@ include('call_db/call_admin_name.php');
         </div>
         <?php include('includes/footer.php') ?>
     </div>
-    <script src="../../assets/node_modules/jquery/dist/jquery.js"></script>
     <!-- BOOTSTRAP SCRIPTS  -->
     <script src="../../assets/node_modules/bootstrap/dist/js/bootstrap.js"></script>
-    <script>
-    var timeDisplay = document.getElementById("time");
-
-    function refreshTime() {
-        var dateString = new Date().toLocaleString("en-US", {
-            timeZone: "Asia/Manila"
-        });
-        var formattedString = dateString.replace(", ", " - ");
-        timeDisplay.innerHTML = formattedString;
-    }
-
-    setInterval(refreshTime, 1000);
-    </script>
     <!-- DATA TABLE SCRIPTS -->
     <script type="text/javascript" charset="utf8"
         src="../../assets/node_modules/datatables.net/js/jquery.dataTables.js">

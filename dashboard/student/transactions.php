@@ -1,7 +1,11 @@
 <?php
 session_start();
 error_reporting(0);
-$current_student = $_SESSION['student_login'];
+$current_student = $_SESSION['student_login']['student_number'];
+if (empty($current_student) or !isset($_SESSION["student_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
 include('call_db/call_stud_name.php');
 ?>
@@ -38,7 +42,7 @@ include('call_db/call_stud_name.php');
         <div class="overall-body">
             <?php include('includes/nav.php') ?>
             <div class="output-panel">
-                <h3>Your Currently Borrowed Books</h3>
+                <h3>Transaction History</h3>
                 <div class="output-overflow">
                     <div class="panel panel-default">
                         <div class="panel-body">

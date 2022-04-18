@@ -2,8 +2,12 @@
 session_start();
 error_reporting(0);
 include('includes/config.php');
-if ($_SESSION['login'] != '') {
-    $_SESSION['login'] = '';
+if ($_SESSION['admin_login'] != '') {
+    header("location: dashboard/admin/dashboard_home.php");
+    exit;
+} else if ($_SESSION['student_login'] != '') {
+    header("location: dashboard/student/dashboard.php");
+    exit;
 }
 ?>
 
@@ -47,13 +51,13 @@ if ($_SESSION['login'] != '') {
                             <label for="floatingInput">Email address</label>
                         </div>
                         <div class="form-floating mb-3">
-                            <input name="password" required maxlength="16" type="password" class="form-control"
-                                id="floatingPassword">
+                            <input name="password" required minlength="6" maxlength="16" type="password"
+                                class="form-control" id="floatingPassword">
                             <label for="floatingPassword">Password</label>
                         </div>
                         <div class="form-floating mb-3 ">
-                            <input name="retype-password" required maxlength="16" type="password" class="form-control"
-                                id="floatingRetypePassword">
+                            <input name="retype-password" required minlength="6" maxlength="16" type="password"
+                                class="form-control" id="floatingRetypePassword">
                             <label for="floatingRetypePassword">Retype Password</label>
                         </div>
                         <div class="captcha-container">
@@ -79,26 +83,39 @@ if ($_SESSION['login'] != '') {
                                         $password = $_REQUEST['password'];
                                         $retype_password = $_REQUEST['retype-password'];
                                         $status = 1;
-                                        if ($password == $retype_password) {
-                                            $password = password_hash($_REQUEST['password'], PASSWORD_DEFAULT);
-                                            $params = array(&$student_id, &$student_number, &$name, &$email, &$password, &$status);
-                                            $connection = sqlsrv_connect($server, $connectionInfo);
-                                            $query = "EXEC C_Signup_Student @StudID = ?, @StudNum = ?, @Name = ?, @Email = ?, @Password = ?, @Status = ?;";
-                                            $statement = sqlsrv_prepare($connection, $query, $params);
-                                            $result = sqlsrv_execute($statement);
-                                            if ($result === TRUE) {
-                                                // February 10, 2022 -> medyo gigil na ako di gumagana yung echo JS function na to...
-                                                // GUMAGANA NA TO PAKIGAWAN LANG NG PARAAN PAANO I-RUN YUNG JAVASCRIPT SA ALERT.
-                                                // include('functions/alert.php');
-                                                // March 4, 2022 -> nirework ko yung database so nabago 'to, will check and add the notification function na.
-                                                // March 4, 2022 (17:44) -> gumagana na 'to haha hello self from the past :D
-                                                $_SESSION['sign_up_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully Signed In!',text: 'Redirected you back to Login...',showConfirmButton: false,timer: 2000});</script>";
-                                                header('Location: student_login.php');
+                                        $connection = sqlsrv_connect($server, $connectionInfo);
+                                        // * Check whether yung provided na Student Number ay unregistered sa database.
+                                        $params = array(&$student_number);
+                                        $query = 'EXEC R_Check_Student_Number @StudNum = ?';
+                                        $statement = sqlsrv_prepare($connection, $query, $params);
+                                        $result = sqlsrv_execute($statement);
+                                        $row = sqlsrv_fetch_array($statement);
+                                        // if null, tuloy yung process
+                                        if ($row['Student_Number'] == null) {
+                                            // * Check whether equal yung password sa retype password.
+                                            if ($password == $retype_password) {
+                                                // * Convert into a hashed password.
+                                                $password = password_hash($_REQUEST['password'], PASSWORD_DEFAULT);
+                                                $params = array(&$student_id, &$student_number, &$name, &$email, &$password, &$status);
+                                                $query = "EXEC C_Signup_Student @StudID = ?, @StudNum = ?, @Name = ?, @Email = ?, @Password = ?, @Status = ?;";
+                                                $statement = sqlsrv_prepare($connection, $query, $params);
+                                                $result = sqlsrv_execute($statement);
+                                                if ($result) {
+                                                    // February 10, 2022 -> medyo gigil na ako di gumagana yung echo JS function na to...
+                                                    // GUMAGANA NA TO PAKIGAWAN LANG NG PARAAN PAANO I-RUN YUNG JAVASCRIPT SA ALERT.
+                                                    // include('functions/alert.php');
+                                                    // March 4, 2022 -> nirework ko yung database so nabago 'to, will check and add the notification function na.
+                                                    // March 4, 2022 (17:44) -> gumagana na 'to haha hello self from the past :D
+                                                    $_SESSION['sign_up_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully Signed In!',text: 'Redirected you back to Login...',showConfirmButton: false,timer: 2000});</script>";
+                                                    header('Location: student_login.php');
+                                                } else {
+                                                    echo "<label class='text-danger'>Something went wrong, try again later.</label>";
+                                                }
                                             } else {
-                                                echo "<label class='text-danger'>Something went wrong, try again later.</label>";
+                                                echo "<label class='text-danger'>Password does not match.</label>";
                                             }
                                         } else {
-                                            echo "<label class='text-danger'>Password does not match.</label>";
+                                            echo "<label class='text-danger'>Student Number already exists. Please double check and try again.</label>";
                                         }
                                     }
                                 }

@@ -4,7 +4,7 @@
         placeholder="Search Books...">
     <datalist id="category-options">
         <?php
-        // EXEC R_Get_Book_Categories;
+        // EXEC R_Get_Available_Books;
         $connection = sqlsrv_connect($server, $connectionInfo);
         $query = "EXEC R_Get_Available_Books;";
         $statement = sqlsrv_prepare($connection, $query);

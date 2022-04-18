@@ -1,7 +1,12 @@
 <?php
 session_start();
 error_reporting(0);
-$current_student = $_SESSION['student_login'];
+$current_student = $_SESSION['student_login']['student_number'];
+// * If the student is NOT logged in, redirect to 403 page.
+if (empty($current_student) or !isset($_SESSION["student_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
 include('call_db/call_stud_name.php');
 ?>
@@ -32,9 +37,7 @@ include('call_db/call_stud_name.php');
     <script src="../../assets/node_modules/sweetalert2/dist/sweetalert2.all.js"></script>
     <script>
     $(document).ready(function() {
-        $('#book_table').DataTable({
-            "bInfo": false
-        });
+        $('#book_table').DataTable();
     });
     </script>
 </head>
@@ -52,7 +55,7 @@ include('call_db/call_stud_name.php');
             <div class="output-panel">
                 <?php include('includes/welcome_card.php') ?>
                 <div class="outside-card">
-                    <div class="output-overflow-stud">
+                    <div class="output-overflow mt-3">
                         <div class="panel panel-default">
                             <div class="panel-body">
                                 <div class="table-responsive">
@@ -66,6 +69,7 @@ include('call_db/call_stud_name.php');
                                                 <th scope="col">Description</th>
                                                 <th scope="col">Category</th>
                                                 <th scope="col">Status</th>
+                                                <th scope="col">Copies Available</th>
                                             </tr>
                                         </thead>
                                         <tbody>

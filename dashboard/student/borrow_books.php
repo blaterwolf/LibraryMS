@@ -1,7 +1,11 @@
 <?php
 session_start();
 error_reporting(0);
-$current_student = $_SESSION['student_login'];
+$current_student = $_SESSION['student_login']['student_number'];
+if (empty($current_student) or !isset($_SESSION["student_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
 include('call_db/call_stud_name.php');
 ?>
@@ -48,43 +52,49 @@ include('call_db/call_stud_name.php');
                                 // * Value from form here:
                                 $input_book_name = $_POST['book_name'];
                                 $input_num_copies = $_POST['book_copies'];
-                                // * Call stored procedure for checking the current copy of books here:
-                                $params = array(&$input_book_name);
-                                $connection = sqlsrv_connect($server, $connectionInfo);
-                                $query = "EXEC R_Get_Book_Info @Name = ?;";
-                                $statement = sqlsrv_prepare($connection, $query, $params);
-                                $result = sqlsrv_execute($statement);
-                                $row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC);
-                                if ($row == NULL) {
-                                    echo "<label class='text-danger'>The book you provided is not found in the database. Please try again.</label>";
+                                if ($input_num_copies <= 0) {
+                                    echo '<script>
+                                    Swal.fire({
+                                        title: "Error!",
+                                        text: "Number of copies cannot be negative!",
+                                        icon: "error",
+                                        confirmButtonText: "OK"
+                                    })
+                                    </script>';
                                 } else {
-                                    $book_id = $row['Book_ID'];
-                                    $book_copies_current = $row['Book_Copies_Current'];
-                                    // * If the provided input of the user is greater than the current number of copies in the database...
-                                    if (!($book_copies_current >= $input_num_copies)) {
-                                        echo "<label class='text-danger'>Invalid Number: you are borrowing more than the current number of that book. Please indicate the right number of copies to borrow and try again. </label>";
+                                    // * Call stored procedure for checking the current copy of books here:
+                                    $params = array(&$input_book_name);
+                                    $connection = sqlsrv_connect($server, $connectionInfo);
+                                    $query = "EXEC R_Get_Book_Info @Name = ?;";
+                                    $statement = sqlsrv_prepare($connection, $query, $params);
+                                    $result = sqlsrv_execute($statement);
+                                    $row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC);
+                                    if ($row == NULL) {
+                                        echo "<label class='text-danger'>The book you provided is not found in the database. Please try again.</label>";
                                     } else {
-                                        // * Get student number based on $current_student
-                                        $params = array(&$current_student);
-                                        $connection = sqlsrv_connect($server, $connectionInfo);
-                                        $query = "EXEC R_Stud_Id_By_Stud_Num @StudNum = ?;";
-                                        $statement = sqlsrv_prepare($connection, $query, $params);
-                                        $result = sqlsrv_execute($statement);
-                                        $row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC);
-                                        $student_id = $row['Student_ID'];
-                                        $borrow_id = generateID();
-                                        // * Call stored procedure for inserting and updating the database.
-                                        $params = array(&$borrow_id, &$book_id, &$student_id, &$input_num_copies);
-                                        $connection = sqlsrv_connect($server, $connectionInfo);
-                                        $query = "EXEC C_Add_Borrow_Book @BorrowID = ?, @BookID = ?, @StudentID = ?, @NumCopies = ?;";
-                                        $statement = sqlsrv_prepare($connection, $query, $params);
-                                        $result = sqlsrv_execute($statement);
-                                        if ($result) {
-                                            $_SESSION['success_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully borrowed a book!',showConfirmButton: false,timer: 2000});</script>";
-                                            echo $_SESSION['success_message'];
-                                            unset($_SESSION['success_message']);
+                                        $book_id = $row['Book_ID'];
+                                        $book_copies_current = $row['Book_Copies_Current'];
+                                        // * If the provided input of the user is greater than the current number of copies in the database...
+                                        if (!($book_copies_current >= $input_num_copies)) {
+                                            echo "<label class='text-danger'>Invalid Number: you are borrowing more than the current number of that book. Please indicate the right number of copies to borrow and try again. </label>";
                                         } else {
-                                            echo "<label class='text-danger'>Failed to borrow the book. Call librarian for details.</label>";
+                                            // * Get student id on the Session Variable 'student_login'
+                                            // * Remove R_Stud_Id_By_Stud_Num
+                                            $student_id = $_SESSION['student_login']['student_id'];
+                                            $borrow_id = generateID();
+                                            // * Call stored procedure for inserting and updating the database.
+                                            $params = array(&$borrow_id, &$book_id, &$student_id, &$input_num_copies);
+                                            $connection = sqlsrv_connect($server, $connectionInfo);
+                                            $query = "EXEC C_Add_Borrow_Book @BorrowID = ?, @BookID = ?, @StudentID = ?, @NumCopies = ?;";
+                                            $statement = sqlsrv_prepare($connection, $query, $params);
+                                            $result = sqlsrv_execute($statement);
+                                            if ($result) {
+                                                $_SESSION['success_message'] = "<script>Swal.fire({icon: 'success',title: 'Successfully borrowed a book!',showConfirmButton: false,timer: 2000});</script>";
+                                                echo $_SESSION['success_message'];
+                                                unset($_SESSION['success_message']);
+                                            } else {
+                                                echo "<label class='text-danger'>Failed to borrow the book. Call librarian for details.</label>";
+                                            }
                                         }
                                     }
                                 }

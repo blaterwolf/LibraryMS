@@ -1,8 +1,14 @@
 <?php
 session_start();
 error_reporting(0);
-$current_librarian = $_SESSION['admin_login'];
+$current_librarian = $_SESSION['admin_login']['username'];
+// Check if the user is logged in, if not then redirect him to login page
+if (empty($current_librarian) or !isset($_SESSION["admin_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
+include('call_db/call_admin_name.php');
 ?>
 
 <!DOCTYPE html>
@@ -41,6 +47,7 @@ include('../../includes/config.php');
 <body>
     <?php
     if (isset($_SESSION['message'])) {
+        // * From admin_login.php
         echo $_SESSION['message'];
         unset($_SESSION['message']);
     } ?>
@@ -76,9 +83,12 @@ include('../../includes/config.php');
                                                 <th scope="col">ISBN</th>
                                                 <th scope="col">Name</th>
                                                 <th scope="col">Author</th>
-                                                <th scope="col">Description</th>
                                                 <th scope="col">Category</th>
                                                 <th scope="col">Status</th>
+                                                <th scope="col">Copies Available</th>
+                                                <th scope="col">Copies Overall</th>
+                                                <th scope="col">Date Created</th>
+                                                <th scope="col">Date Modified</th>
                                             </tr>
                                         </thead>
                                         <tbody>

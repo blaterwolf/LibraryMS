@@ -18,13 +18,9 @@ if (basename($_SERVER['PHP_SELF']) == 'dashboard_home.php' or basename($_SERVER[
         <i class="bi bi-clipboard-check-fill"></i>&emsp;
         RETURN BOOKS
     </a>
-    <a id="archive-log" type="button" class="btn btn-primary text-start" href="archive.php">
-        <i class="bi bi-archive-fill"></i>&emsp;
-        ARCHIVE LOG
-    </a>
 </div>
 <?php
-elseif (basename($_SERVER['PHP_SELF']) == 'books_add.php' or basename($_SERVER['PHP_SELF']) == 'books_search.php' or basename($_SERVER['PHP_SELF']) == 'books_edit.php') :
+elseif (basename($_SERVER['PHP_SELF']) == 'books_add.php' or basename($_SERVER['PHP_SELF']) == 'books_search.php' or basename($_SERVER['PHP_SELF']) == 'books_edit.php' or basename($_SERVER['PHP_SELF']) == 'books_add_category.php' or basename($_SERVER['PHP_SELF']) == 'books_edit_category.php') :
 ?>
 <div class="nav-panel btn-group-vertical">
     <a id="home" type="button" class="btn btn-primary text-center" href="dashboard_home.php">
@@ -42,10 +38,6 @@ elseif (basename($_SERVER['PHP_SELF']) == 'books_add.php' or basename($_SERVER['
     <a id="issue-books" type="button" class="btn btn-primary text-start" href="issue_books.php">
         <i class="bi bi-clipboard-check-fill"></i>&emsp;
         RETURN BOOKS
-    </a>
-    <a id="archive-log" type="button" class="btn btn-primary text-start" href="archive.php">
-        <i class="bi bi-archive-fill"></i>&emsp;
-        ARCHIVE LOG
     </a>
 </div>
 <?php
@@ -68,10 +60,6 @@ elseif (basename($_SERVER['PHP_SELF']) == 'student_search.php' or basename($_SER
         <i class="bi bi-clipboard-check-fill"></i>&emsp;
         RETURN BOOKS
     </a>
-    <a id="archive-log" type="button" class="btn btn-primary text-start" href="archive.php">
-        <i class="bi bi-archive-fill"></i>&emsp;
-        ARCHIVE LOG
-    </a>
 </div>
 <?php
 elseif (basename($_SERVER['PHP_SELF']) == 'issue_books.php') :
@@ -92,10 +80,6 @@ elseif (basename($_SERVER['PHP_SELF']) == 'issue_books.php') :
     <a id="issue-books" type="button" class="btn btn-primary active text-start" href="issue_books.php">
         <i class="bi bi-clipboard-check-fill"></i>&emsp;
         RETURN BOOKS
-    </a>
-    <a id="archive-log" type="button" class="btn btn-primary text-start" href="archive.php">
-        <i class="bi bi-archive-fill"></i>&emsp;
-        ARCHIVE LOG
     </a>
 </div>
 <?php
@@ -118,10 +102,6 @@ elseif (basename($_SERVER['PHP_SELF']) == 'archive.php') :
         <i class="bi bi-clipboard-check-fill"></i>&emsp;
         RETURN BOOKS
     </a>
-    <a id="archive-log" type="button" class="btn btn-primary active text-start" href="archive.php">
-        <i class="bi bi-archive-fill"></i>&emsp;
-        ARCHIVE LOG
-    </a>
 </div>
 <?php else : ?>
 <div class="nav-panel btn-group-vertical">
@@ -140,10 +120,6 @@ elseif (basename($_SERVER['PHP_SELF']) == 'archive.php') :
     <a id="issue-books" type="button" class="btn btn-primary text-start" href="issue_books.php">
         <i class="bi bi-clipboard-check-fill"></i>&emsp;
         RETURN BOOKS
-    </a>
-    <a id="archive-log" type="button" class="btn btn-primary text-start" href="archive.php">
-        <i class="bi bi-archive-fill"></i>&emsp;
-        ARCHIVE LOG
     </a>
 </div>
 <?php endif; ?>

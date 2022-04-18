@@ -1,8 +1,13 @@
 <?php
 session_start();
 error_reporting(0);
-$current_librarian = $_SESSION['admin_login'];
+$current_librarian = $_SESSION['admin_login']['username'];
+if (empty($current_librarian) or !isset($_SESSION["admin_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
+include('call_db/call_admin_name.php');
 ?>
 
 <!DOCTYPE html>
@@ -57,17 +62,6 @@ include('../../includes/config.php');
                             <form role="form" method="POST" id="edit_student_form"
                                 action="<?php echo htmlspecialchars($_SERVER["PHP_SELF"]); ?>">
                                 <div class="row">
-                                    <div class="mb-3 col-md">
-                                        <label for="student_id" class="form-label">Student ID<span
-                                                class="text-danger">*</span> <span
-                                                class='badge bg-info text-dark'>Database: Unmodifiable</span>
-                                        </label>
-                                        <input disabled readonly required name="student_id" type="text"
-                                            class="form-control" id="student_id" placeholder="Student ID Here..."
-                                            onselectstart="return false;" onpaste="return false;" onCopy="return false"
-                                            onCut="return false" onDrag="return false" onDrop="return false"
-                                            autocomplete=off value="<?= print_r($_SESSION['student_id']); ?>">
-                                    </div>
                                     <div class="mb-3 col-md">
                                         <label for="student_number" class="form-label">Student Number<span
                                                 class="text-danger">*</span>

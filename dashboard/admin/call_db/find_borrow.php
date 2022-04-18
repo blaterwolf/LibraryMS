@@ -22,6 +22,12 @@ while ($row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC)) {
             }
         } else if ($key == 'Borrow Date') {
             echo "<td>" . $value->format('Y-m-d H:i') . "</td>";
+        } else if ($key == 'Return Date') {
+            if ($value == null) {
+                echo "<td><span class='badge bg-danger'>N/A</span></td>";
+            } else {
+                echo "<td>" . $value->format('Y-m-d H:i') . "</td>";
+            }
         }
         if ($rowCount == count($row)) {
             echo "</tr>";

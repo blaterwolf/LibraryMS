@@ -24,6 +24,12 @@ while ($row = sqlsrv_fetch_array($statement, SQLSRV_FETCH_ASSOC)) {
             } else {
                 echo "<td><span class='badge bg-danger'>Unavailable</span></td>";
             }
+        } else if ($key == 'Copies Available') {
+            if ($value == 0) {
+                echo "<td><span class='badge bg-danger'>N/A</span></td>";
+            } else {
+                echo "<td>" . $value . "</td>";
+            }
         }
         if ($rowCount == count($row)) {
             echo "</tr>";

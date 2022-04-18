@@ -1,8 +1,13 @@
 <?php
 session_start();
 error_reporting(0);
-$current_librarian = $_SESSION['admin_login'];
+$current_librarian = $_SESSION['admin_login']['username'];
+if (empty($current_librarian) or !isset($_SESSION["admin_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
+include('call_db/call_admin_name.php');
 ?>
 
 <!DOCTYPE html>
@@ -160,7 +165,7 @@ include('../../includes/config.php');
                                         // * Call DB to find the Category ID.
                                         $params = array(&$book_category);
                                         $connection = sqlsrv_connect($server, $connectionInfo);
-                                        $query = "EXEC R_Get_Category_Name @Cat_Name = ?;";
+                                        $query = "EXEC R_Get_CatID_Based_On_CatName @Cat_Name = ?;";
                                         $statement = sqlsrv_prepare($connection, $query, $params);
                                         $result = sqlsrv_execute($statement);
                                         $row = sqlsrv_fetch_array($statement);
@@ -177,7 +182,7 @@ include('../../includes/config.php');
                                             unset($_SESSION['book_id']);
                                             header("Location: books_search.php");
                                         } else {
-                                            $_SESSION['edit_book_message'] = "<script>Swal.fire({icon: 'error',title: 'Unsuccessful editing book!',text: 'basta may error beh.', showConfirmButton: false,timer: 2000});</script>";
+                                            $_SESSION['edit_book_message'] = "<script>Swal.fire({icon: 'error',title: 'Unsuccessful editing book!',text: 'You may have messed up typing something to the form, please try again.', showConfirmButton: false,timer: 2000});</script>";
                                             unset($_SESSION['book_id']);
                                             header("Location: books_search.php");
                                         }

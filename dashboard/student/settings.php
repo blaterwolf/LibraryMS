@@ -1,7 +1,11 @@
 <?php
 session_start();
 error_reporting(0);
-$current_student = $_SESSION['student_login'];
+$current_student = $_SESSION['student_login']['student_number'];
+if (empty($current_student) or !isset($_SESSION["student_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
 include('call_db/call_stud_name.php');
 ?>
@@ -75,7 +79,7 @@ include('call_db/call_stud_name.php');
                                     </div>
                                     <div class="row">
                                         <div class="mb-3 col">
-                                            <label for="new_password" class="form-label">New Password<span
+                                            <label for="new_password" class="form-label">Password<span
                                                     class="text-danger">*</span></label>
                                             <div class="input-group">
                                                 <input placeholder="Password" minlength="6" maxlength="16"
@@ -91,8 +95,9 @@ include('call_db/call_stud_name.php');
                                     <div class="captcha-container-special col-md row">
                                         <div class="mb-3 col-md-2">
                                             <label for="floatingInput">Captcha<span class="text-danger">*</span></label>
-                                            <input required type="text" class="col-md form-control" id="floatingInput"
-                                                name="captcha" placeholder="12345" maxlength="5" autocomplete="off">
+                                            <input required type="number" class="col-md form-control" id="floatingInput"
+                                                name="captcha" placeholder="12345" minlength='5' maxlength="5"
+                                                autocomplete="off">
                                         </div>
                                         <br />
                                         <img src='../../functions/captcha.php' alt="captcha"

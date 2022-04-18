@@ -1,8 +1,13 @@
 <?php
 session_start();
 error_reporting(0);
-$current_librarian = $_SESSION['admin_login'];
+$current_librarian = $_SESSION['admin_login']['username'];
+if (empty($current_librarian) or !isset($_SESSION["admin_login"])) {
+    header("location: ../../403.php");
+    exit;
+}
 include('../../includes/config.php');
+include('call_db/call_admin_name.php');
 ?>
 
 <!DOCTYPE html>
@@ -67,6 +72,7 @@ include('../../includes/config.php');
                                                 <th scope="col">Student</th>
                                                 <th scope="col">Status</th>
                                                 <th scope="col">Borrow Date</th>
+                                                <th scope="col">Return Date</th>
                                             </tr>
                                         </thead>
                                         <tbody>
